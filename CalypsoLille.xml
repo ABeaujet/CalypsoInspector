@@ -6,32 +6,32 @@
         </file>
         <file identifier="2000" type="DF" description="ticketing">
             <file identifier="2001" type="EF" description="Environment, Holder">
-                <field description="EnvVersionNumber"	                length="6"  type="undefined"/>
-                <field description="Env"	                            length="7"  type="bitmap">
-                    <field description="EnvNetworkId"	                length="24" type="networkId"/>
-                    <field description="EnvApplicationIssuerId"	        length="8"  type="number"/>
-                    <field description="EnvApplicationValidityEndDate"	length="14" type="date"/>
-                    <field description="EnvPayMethod"		            length="11" type="paymethod"/>
-                    <field description="EnvAuthenticator"	            length="16" type="undefined"/>
-                    <field description="EnvSelectList"		            length="32" type="undefined"/>
-                    <field description="EnvData"		                length="2"  type="bitmap">
-                        <field description="EnvCardStatus"		        length="1"  type="undefined"/>
-                        <field description="EnvExtra"		            length="0"  type="undefined"/>
+                <field description="EnvVersionNumber"                   length="6"  type="undefined"/>
+                <field description="Env"                                length="7"  type="bitmap">
+                    <field description="EnvNetworkId"                   length="24" type="networkId"/>
+                    <field description="EnvApplicationIssuerId"         length="8"  type="number"/>
+                    <field description="EnvApplicationValidityEndDate"  length="14" type="date"/>
+                    <field description="EnvPayMethod"                   length="11" type="paymethod"/>
+                    <field description="EnvAuthenticator"               length="16" type="undefined"/>
+                    <field description="EnvSelectList"                  length="32" type="undefined"/>
+                    <field description="EnvData"                        length="2"  type="bitmap">
+                        <field description="EnvCardStatus"              length="1"  type="undefined"/>
+                        <field description="EnvExtra"                   length="0"  type="undefined"/>
                     </field>
                 </field>
                 <field description="Holder Bitmap"                      length="8"  type="bitmap">
                     <field description="Holder Name"                    length="2"  type="bitmap">
-                        <field description="Holder Surname"	            length="85" type="string"/>
+                        <field description="Holder Surname"             length="85" type="string"/>
                         <field description="Holder Forename"            length="85" type="string"/>
                     </field>
                     <field description="Holder Birth"                   length="2"  type="bitmap">
-                        <field description="Birth Date"	                length="32" type="BCDDate"/>
+                        <field description="Birth Date"                 length="32" type="BCDDate"/>
                         <field description="Birth Place"                length="115" type="string"/>
                     </field>
-                    <field description="Holder Birthname"	            length="85" type="string"/>
-                    <field description="Holder Id Number"           	length="32" type="number"/>
+                    <field description="Holder Birthname"               length="85" type="string"/>
+                    <field description="Holder Id Number"               length="32" type="number"/>
                     <field description="Holder Country Alpha"           length="24" type="undefined"/>
-                    <field description="Holder Company"  	            length="32" type="undefined"/>
+                    <field description="Holder Company"                 length="32" type="undefined"/>
                     <field description="Holder Profiles(0..4)"          length="4"  type="repeat">
                         <field description="Profile Bitmap"             length="3"  type="bitmap">
                             <field description="Network ID"             length="24" type="networkId"/>
@@ -39,15 +39,15 @@
                             <field description="Profile Date"           length="14" type="date"/>
                         </field>
                     </field>
-                    <field description="Holder Data"		            length="12" type="bitmap">
-                        <field description="HolderDataCardStatus"		        length="4"  type="undefined"/>
-                        <field description="HolderDataTelereglement"	        length="4"  type="undefined"/>
-                        <field description="HolderDataResidence"		        length="17" type="undefined"/>
-                        <field description="HolderDataCommercialID"		        length="6"  type="undefined"/>
-                        <field description="HolderDataWorkPlace"		        length="17"  type="undefined"/>
-                        <field description="HolderDataStudyPlace"		        length="17"  type="undefined"/>
-                        <field description="HolderDataSaleDevice"		        length="16"  type="undefined"/>
-                        <field description="HolderDataAuthenticator"	        length="16"  type="undefined"/>
+                    <field description="Holder Data"                    length="12" type="bitmap">
+                        <field description="HolderDataCardStatus"               length="4"  type="undefined"/>
+                        <field description="HolderDataTelereglement"            length="4"  type="undefined"/>
+                        <field description="HolderDataResidence"                length="17" type="undefined"/>
+                        <field description="HolderDataCommercialID"             length="6"  type="undefined"/>
+                        <field description="HolderDataWorkPlace"                length="17"  type="undefined"/>
+                        <field description="HolderDataStudyPlace"               length="17"  type="undefined"/>
+                        <field description="HolderDataSaleDevice"               length="16"  type="undefined"/>
+                        <field description="HolderDataAuthenticator"            length="16"  type="undefined"/>
                         <field description="HolderDataProfileStartDate1"        length="14"  type="undefined"/>
                         <field description="HolderDataProfileStartDate2"        length="14"  type="undefined"/>
                         <field description="HolderDataProfileStartDate3"        length="14"  type="undefined"/>
