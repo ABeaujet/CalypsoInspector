@@ -23,6 +23,29 @@ public class CalypsoCard {
         return atr.getLong();
     }
 
+    public String getROMVersion(){
+        CommandAPDU c = new CommandAPDU(new byte[]{(byte)0x00, (byte)0x10, 0x00, 0x00, 0x00});
+        ResponseAPDU r = null;
+        try {
+            r = this.card.getBasicChannel().transmit(c);
+        } catch (CardException e) {
+            e.printStackTrace();
+        }
+
+        return new BitArray(r.getBytes(), 55*8, 8).toHex().toUpperCase();
+    }
+
+    public String getChipVersion(){
+        CommandAPDU c = new CommandAPDU(new byte[]{(byte)0x00, (byte)0x10, 0x00, 0x00, 0x00});
+        ResponseAPDU r = null;
+        try {
+            r = this.card.getBasicChannel().transmit(c);
+        } catch (CardException e) {
+            e.printStackTrace();
+        }
+        return new BitArray(r.getBytes(), 54*8, 8).toHex().toLowerCase();
+    }
+
     public void read(){
         for(CalypsoFile f : env.getFiles())
             this.readFile(f);
@@ -84,6 +107,9 @@ public class CalypsoCard {
     public void dump() {
         System.out.println("Calypso card Country="+this.env.getCountryId()+" Network="+this.env.getNetworkId());
         System.out.println("Calypso card number #"+this.getCardNumber());
+        String chipVer = this.getChipVersion();
+        System.out.println("Calypso celego chip : version "+chipVer+" (" + (chipVer.equals("3c ") ? "" : "non ") + "compatible NFC Android)");
+        System.out.println("ROM version : " + this.getROMVersion());
         System.out.println("ATR :"+ BitArray.bytes2Hex(this.card.getATR().getBytes()));
         System.out.println("Contents :");
         for(CalypsoFile f : this.env.getFiles())
