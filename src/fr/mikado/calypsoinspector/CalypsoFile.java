@@ -1,10 +1,16 @@
 package fr.mikado.calypsoinspector;
 
+import com.sun.istack.internal.Nullable;
 import org.jdom2.Element;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * This class describes a Calypso File.
+ * A file has a structure (fields) which describes how each records for this file are structured.
+ * CalypsoFile structures can (and should) be loaded from an XML file.
+ */
 public class CalypsoFile {
     public String getDescription() {
         return description;
@@ -23,18 +29,17 @@ public class CalypsoFile {
     private ArrayList<CalypsoRecordField> fields;
     private ArrayList<CalypsoRecord> records;
 
-    public CalypsoFile(String identifier, CalypsoFile parent){
-        this.identifier = identifier;
-        this.parent = parent;
-    }
-
-    public CalypsoFile(Element e, CalypsoEnvironment env){
+    /**
+     * Creates a Calypso File from an XML node.
+     * @param e An XML node
+     * @param env Current Calypso Environment (nullable)
+     */
+    public CalypsoFile(Element e, @Nullable CalypsoEnvironment env){
         this.children = new ArrayList<>();
         this.records = new ArrayList<>();
         this.identifier = e.getAttributeValue("identifier");
         this.description = e.getAttributeValue("description");
         this.type = (e.getAttributeValue("type").equals("DF") ? CalypsoFileType.DF : CalypsoFileType.EF);
-        //Logger.getGlobal().info("Creating file : " + identifier);
 
         if(this.type == CalypsoFileType.EF) {
             this.fields = new ArrayList<>();
@@ -58,13 +63,12 @@ public class CalypsoFile {
         this.parent = f;
     }
 
+    /**
+     * Creates a new record for this file, from the byte buffer received in the READ RECORD APDU response.
+     * @param buffer Byte buffer in the READ RECORD APDU response.
+     */
     public void newRecord(byte[] buffer){
-        /*
-        System.out.println("RECORD FOR FILE " + this.getFullPath() + " (" + this.getDescription() + ") :");
-        System.out.println(CalypsoCard.bytes2Hex(buffer));
-        System.out.println("END RECORD.");
-        */
-        CalypsoRecord r = new CalypsoRecord(this.fields, this.description, this.description);
+        CalypsoRecord r = new CalypsoRecord(this.fields, this);
         r.fillRecord(buffer);
         this.records.add(r);
     }

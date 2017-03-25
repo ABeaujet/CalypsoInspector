@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<calypsoEnvironment country="France" countryId="250" operator="Transpole/SNCF" networkId="149">
+<calypsoEnvironment country="France" countryId="250" operator="Transpole/SNCF" networkId="0">
     <card type="Calypso"  network="Transpole/SNCF" AID="3MTR.ICA">
         <file identifier="3F04" type="EF" description="AID">
             <field description="AID" length="64" type="string"/>
+        </file>
+        <file identifier="1000" type="DF" description="Unknown">
+            <file identifier="1004" type="EF" description="Unknown"/>
+            <file identifier="1014" type="EF" description="Load log"/>
+            <file identifier="1015" type="EF" description="Purchase Log"/>
         </file>
         <file identifier="2000" type="DF" description="ticketing">
             <file identifier="2001" type="EF" description="Environment, Holder">
@@ -34,7 +39,7 @@
                     <field description="Holder Company"                 length="32" type="undefined"/>
                     <field description="Holder Profiles(0..4)"          length="4"  type="repeat">
                         <field description="Profile Bitmap"             length="3"  type="bitmap">
-                            <field description="Network ID"             length="24" type="networkId"/>
+                            <field description="Network ID"             length="24" type="undefined"/> <!-- networkId -->
                             <field description="Profile Number"         length="8"  type="number"/>
                             <field description="Profile Date"           length="14" type="date"/>
                         </field>
@@ -60,7 +65,7 @@
                 <field description="Event Time"                         length="11"  type="time" />
                 <field description="Event"                              length="28"  type="bitmap">
                     <field description="EventDisplayData"               length="8"   type="undefined"/>
-                    <field description="EventNetworkId"                 length="24"  type="networkId"/>
+                    <field description="EventNetworkId"                 length="24"  type="undefined"/><!-- networkId -->
                     <field description="EventCode"                      length="8"   type="undefined"/>
                     <field description="EventResult"                    length="8"   type="undefined"/>
                     <field description="EventServiceProvider"           length="8"   type="undefined"/>
@@ -86,21 +91,27 @@
                     <field description="EventPriceUnit"                 length="16"  type="undefined"/>
                     <field description="EventContractPointer"           length="5"   type="undefined"/>
                     <field description="EventAuthenticator"             length="16"  type="undefined"/>
-                    <field description="EventBitmapExtra"               length="5"   type="undefined"/>
+                    <field description="EventData"                      length="5"   type="bitmap">
+                        <field description="EventDataFristStamp"        length="14"  type="date"/>
+                        <field description="EventDataFristStamp"        length="11"  type="time"/>
+                        <field description="EventDataSimulation"        length="1"   type="yesno"/>
+                        <field description="EventDataTrip"              length="2"   type="undefined"/>
+                        <field description="EventDataRouteDirection"    length="2"   type="number"/>
+                    </field>
                 </field>
             </file>
             <file identifier="2050" type="EF" description="Contract List">
                 <field description="BestContractCount"                  length="4"   type="repeat">
                     <field description="BestContract"                   length="3"   type="bitmap">
-                        <field description="BestContractsNetworkId"     length="24"  type="networkId"/>
+                        <field description="BestContractsNetworkId"     length="24"  type="undefined"/> <!-- networkId -->
                         <field description="BestContractsTariff"        length="16"  type="undefined"/>
                         <field description="BestContractsPointer"       length="5"   type="undefined"/>
                     </field>
                 </field>
             </file>
-            <file identifier="2020" type="EF" description="Contracts">
+            <file identifier="202a" type="EF" description="Contracts">
                 <field description="Contracts bitmap"                   length="20"  type="bitmap">
-                    <field description="ContractNetworkId"              length="24"  type="networkId"/>
+                    <field description="ContractNetworkId"              length="24"  type="undefined"/> <!-- networkId -->
                     <field description="ContractProvider"               length="8"   type="undefined"/>
                     <field description="ContractTariff"                 length="16"  type="undefined"/>
                     <field description="ContractSerialNumber"           length="32"  type="undefined"/>
@@ -110,10 +121,10 @@
                     </field>
                     <field description="ContractPassengerInfo"          length="2"   type="bitmap">
                         <field description="ContractPassengerClass"     length="6"   type="undefined"/>
-                        <field description="ContractPassengerTotal"     length="32"  type="undefined"/>
+                        <field description="ContractPassengerTotal"     length="8"  type="undefined"/>
                     </field>
                     <field description="ContractVehicleClassAllowed"    length="6"   type="undefined"/>
-                    <field description="ContractPaymentPointer"         length="32"  type="undefined"/>
+                    <field description="ContractPaymentPointer(0..5)"   length="32"  type="undefined"/> <!--wtf-->
                     <field description="ContractPayMethod"              length="11"  type="payMethod"/>
                     <field description="ContractServices"               length="16"  type="undefined"/>
                     <field description="ContractPriceAmount"            length="16"  type="amount"/>
@@ -149,10 +160,10 @@
                         <field description="ContractInterchange"        length="8"   type="undefined"/>
                     </field>
                     <field description="ContractContractSaleDate"       length="4"   type="bitmap">
-                        <field description="ContractDate"               length="14"  type="date"/>
-                        <field description="ContractTime"               length="11"  type="time"/>
-                        <field description="ContractAgent"              length="8"   type="undefined"/>
-                        <field description="ContractDevice"             length="16"  type="undefined"/>
+                        <field description="ContractSaleDate"           length="14"  type="date"/>
+                        <field description="ContractSaleTime"           length="11"  type="time"/>
+                        <field description="ContractSaleAgent"          length="8"   type="undefined"/>
+                        <field description="ContractSaleDevice"         length="16"  type="undefined"/>
                     </field>
                     <field description="ContractStatus"                 length="8"   type="undefined"/>
                     <field description="ContractLoyaltyPoints"          length="16"  type="undefined"/>

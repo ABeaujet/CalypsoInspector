@@ -1,5 +1,7 @@
 package fr.mikado.calypsoinspector;
 
+import com.sun.istack.internal.Nullable;
+import org.jdom2.Document;
 import org.jdom2.Element;
 
 import java.text.SimpleDateFormat;
@@ -9,11 +11,15 @@ import java.util.HashMap;
 
 import static fr.mikado.calypsoinspector.CalypsoRecordField.FieldType.*;
 
+/**
+ * This class describes a field inside a calypso record.
+ * A Calypso Record is basically an array of fields.
+ */
 public class CalypsoRecordField {
 
     enum FieldType {
-        Bitmap, Pointer, Date, Time, DateTime, Amount, Number, NetworkId, BcdDate, String, Repeat, Route, Stop, Vehicle, Direction, PayMethod, Undefined;
-        public static String[] n = {"Bitmap", "Pointer", "Date", "Time", "DateTime", "Amount", "Number", "NetworkId", "BcdDate", "String", "Repeat", "Route", "Stop", "Vehicle", "Direction", "PayMethod", "Undefined"};
+        Bitmap, Pointer, Date, Time, DateTime, Amount, Number, NetworkId, BcdDate, String, Repeat, Route, Stop, Vehicle, Direction, PayMethod, YesNo, Undefined;
+        public static String[] n = {"Bitmap", "Pointer", "Date", "Time", "DateTime", "Amount", "Number", "NetworkId", "BcdDate", "String", "Repeat", "Route", "Stop", "Vehicle", "Direction", "PayMethod", "YesNo", "Undefined"};
         public static int c= 0;
         private int cc= 0;
         FieldType(){ this.cc = FieldType.getC(); }
@@ -37,16 +43,40 @@ public class CalypsoRecordField {
             payMethods.put(217, "Bon de réduction");
     }
 
+    private static HashMap<Integer, String> countryCodes;
+
+    static{
+        countryCodes = new HashMap<>();
+        Document cc = CalypsoEnvironment.openDocument("CountryCodes.xml");
+        if(cc != null) {
+            if (!cc.getRootElement().getName().equals("countryCodes")) {
+                System.out.println("CountryCodes.xml does not contain any country codes !");
+            } else {
+                for (Element e : cc.getRootElement().getChildren())
+                    countryCodes.put(Integer.parseInt(e.getAttributeValue("id")), e.getAttributeValue("name"));
+            }
+        }
+    }
+
     private CalypsoEnvironment env;
+    private CalypsoRecord parentRecord;
     private String description;
     private int length;
     private FieldType type;
     private ArrayList<CalypsoRecordField> subfields;
     private HashMap<String, CalypsoRecordField> subfieldsByName;
     private String convertedValue;
+    private BitArray bits;
     private boolean filled;
 
-    public CalypsoRecordField(String description, int size, CalypsoRecordField.FieldType type, CalypsoEnvironment env){
+    /**
+     * Manually add a Record Field (without XML)
+     * @param description field description
+     * @param size Size in bits
+     * @param type Data type of the field
+     * @param env Current Calypso Environment (can be null)
+     */
+    public CalypsoRecordField(String description, int size, CalypsoRecordField.FieldType type, @Nullable CalypsoEnvironment env){
         this.description = description;
         this.length = size;
         this.subfields = new ArrayList<>();
@@ -105,12 +135,19 @@ public class CalypsoRecordField {
                 return Vehicle;
             case "direction":
                 return Direction;
+            case "yesno":
+                return YesNo;
             default:
                 return Undefined;
         }
     }
 
-    public CalypsoRecordField(Element e, CalypsoEnvironment env){
+    /**
+     * Creates a Record field using an XML node.
+     * @param e XML DOM node
+     * @param env Current Calypso Environment (can be null)
+     */
+    public CalypsoRecordField(Element e, @Nullable CalypsoEnvironment env){
         this.description = e.getAttributeValue("description");
         this.type = this.getFieldTypeFromString(e.getAttributeValue("type"));
         this.length = Integer.parseInt(e.getAttributeValue("length"));
@@ -125,27 +162,26 @@ public class CalypsoRecordField {
     }
 
     /**
-     *
+     * Fills the current record field using a bit buffer from the file read.
      * @param buffer Array of bits
      * @param offset Offset in bits
      * @return amount of bits consumed
      * @throws IndexOutOfBoundsException
      */
     public int fill(byte[] buffer, int offset) throws IndexOutOfBoundsException{
-        BitArray bits = new BitArray(buffer, offset, this.length);
+        this.bits = new BitArray(buffer, offset, this.length);
         int consumed = this.length;
         this.filled = true;
 
         switch (this.type) {
             case Bitmap:
-                BitArray bitmapMask = bits;
-                this.convertedValue = bitmapMask.toString();
+                this.convertedValue = this.bits.toString();
                 for (int i = 0; i < this.length; i++)
-                    if (bitmapMask.get(i))
+                    if (this.bits.get(i))
                         consumed += this.subfields.get(i).fill(buffer, offset + consumed);
                 break;
             case Repeat:
-                int count = bits.getInt();
+                int count = this.bits.getInt();
                 this.convertedValue = "" + count;
 
                 for (int i = 0; i < count - 1; i++) // on ajoute les répétitions des champs.
@@ -155,21 +191,21 @@ public class CalypsoRecordField {
                     consumed += this.subfields.get(i).fill(buffer, offset + consumed);
                 break;
             case String:
-                this.convertedValue = new String(bits.getChars());
+                this.convertedValue = new String(this.bits.getChars());
                 break;
             case Date:
-                int timestamp = 852073200 + bits.getInt() * 24 * 3600;
+                int timestamp = 852073200 + this.bits.getInt() * 24 * 3600;
                 java.util.Date date = new Date((long) timestamp * 1000);
                 this.convertedValue = new SimpleDateFormat("dd/MM/yyyy").format(date);
                 break;
             case Time:
-                int minutes = bits.getInt();
-                this.convertedValue = ""+minutes/60+":"+minutes%60;
+                int minutes = this.bits.getInt();
+                this.convertedValue = ""+(minutes/60)%24+":"+minutes%60;
                 break;
             case BcdDate:
                 assert (this.length == 32);
                 StringBuilder sb = new StringBuilder();
-                String rawDate = bits.toHex();
+                String rawDate = this.bits.toHex();
                 sb.append(rawDate.substring(9, 11));
                 sb.append('/');
                 sb.append(rawDate.substring(6, 8));
@@ -179,7 +215,7 @@ public class CalypsoRecordField {
                 this.convertedValue = sb.toString();
                 break;
             case PayMethod:
-                int methNo = bits.getInt();
+                int methNo = this.bits.getInt();
                 if (payMethods.containsKey(methNo))
                     this.convertedValue = payMethods.get(methNo);
                 else
@@ -187,56 +223,53 @@ public class CalypsoRecordField {
                 break;
             case Number:
                 if (this.length < 8) { // < et non <= car types signés.
-                    this.convertedValue = "" +  (int) bits.getBytes()[0];
+                    this.convertedValue = "" +  (int) this.bits.getBytes()[0];
                 } else if (this.length < 32) {
-                    this.convertedValue = "" + (int) bits.getChars()[0];
+                    this.convertedValue = "" + (int) this.bits.getChars()[0];
                 } else if (this.length < 64) {
-                    this.convertedValue = "" + bits.getLong();
+                    this.convertedValue = "" + this.bits.getLong();
                 } else {
                     System.out.println("INTEGER TOO BIG !");
                     this.convertedValue = "XXXXXXXXXXXX";
                 }
                 break;
             case NetworkId:
-                /* Buggy...
-                assert(this.length == 24);
-                bits = bits.getFlipped();
-                int countryID = bits.get(0, 12).getInt();
-                int regionID = bits.get(12, 12).getInt();
-                this.convertedValue = ""+countryID+":"+regionID;*/
-                this.convertedValue = bits.toHex();
+                // Network ID might be BCD encoded in 2000/2001 Env>EnvNetworkId
+                String net = this.bits.toHex();
+                net = net.replace(" ", "");
+                int country = Integer.parseInt(net.substring(0, 3));
+                if(env != null && country != this.env.getCountryId() && country != 0)
+                    System.out.println("The environment configuration does not suit this card ! Wrong country id.");
+                int netId = Integer.parseInt(net.substring(4, 6));
+                if(env != null && netId != this.env.getNetworkId() && netId != 0)
+                    System.out.println("The environment configuration does not suit this card ! Wrong network id.");
+
+                this.convertedValue = (countryCodes.containsKey(country) ? countryCodes.get(country) : ""+country) + " - " + netId;
                 break;
             case Stop:
-                if(this.env.isTopologyConfigured())
-                    this.convertedValue = this.env.getStopName(bits.getInt());
+                if(this.env != null && this.env.isTopologyConfigured())
+                    this.convertedValue = this.env.getStopName(this.bits.getInt());
                 else
-                    this.convertedValue = bits.toHex();
+                    this.convertedValue = this.bits.toHex();
                 break;
             case Route:
-                if(this.env.isTopologyConfigured())
-                    this.convertedValue = this.env.getRouteName(bits.getInt()).replace("/--/", "<>"); // pas de chevrons dans le xml...
+                if(this.env != null && this.env.isTopologyConfigured())
+                    this.convertedValue = this.env.getRouteName(this.bits.getInt()).replace("/--/", "<>"); // pas de chevrons dans le xml...
                 else
-                    this.convertedValue = bits.toHex();
+                    this.convertedValue = this.bits.toHex();
+                break;
+            case YesNo:
+                this.convertedValue = this.bits.getInt() == 0 ? "Yes":"No";
                 break;
             default:  // et donc Undefined
-                this.convertedValue = bits.toHex();
+                this.convertedValue = this.bits.toHex();
                 break;
         }
         return consumed;
     }
 
-    public static String bits2String(byte[] bs, int start, int count){
-        StringBuilder sb = new StringBuilder();
-        for (int src = start; src < (start+count); src++)
-            sb.append(((bs[src/8] >> (7-src%8))&0x01) == 1 ? '1' : '0');
-        return sb.toString();
-    }
-
-    public long getBits(byte[] bs, int offset, int shift, int count){
-        long mask = 0x7fffffffffffffffL;
-        long res = 0x0L;
-
-        return res;
+    public BitArray getBits(){
+        return this.bits;
     }
 
     public static String nesting(int level){
@@ -246,6 +279,10 @@ public class CalypsoRecordField {
         return r.toString();
     }
 
+    /**
+     * Prints the contents of the record field
+     * @param n Indent level
+     */
     public void print(int n){
         if(!this.filled)
             return;
@@ -265,11 +302,19 @@ public class CalypsoRecordField {
     public java.lang.String getConvertedValue() {
         return convertedValue;
     }
-
+    public void setParentRecord(CalypsoRecord r){
+        this.parentRecord = r;
+    }
     public java.lang.String getDescription() {
         return description;
     }
+    public ArrayList<CalypsoRecordField> getSubfields(){
+        return this.subfields;
+    }
     public CalypsoRecordField getSubfield(String description){
         return this.subfieldsByName.containsKey(description) ? this.subfieldsByName.get(description) : null;
+    }
+    public CalypsoRecord getParentRecord(){
+        return this.parentRecord;
     }
 }

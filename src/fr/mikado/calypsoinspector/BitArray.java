@@ -3,6 +3,10 @@ package fr.mikado.calypsoinspector;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Simple Bit manipulation class.
+ * (may have some bugs not discovered in the unit tests...)
+ */
 public class BitArray {
     private ArrayList<Boolean> bits;
 
@@ -22,10 +26,8 @@ public class BitArray {
      */
     public BitArray(byte[] bs){
         this.bits = new ArrayList<>(Collections.nCopies(bs.length*8, false));
-        for (int i = 0; i < bs.length*8; i++) {
-            int a = (bs[i / 8] >> (i % 8)) & 0x01;
+        for (int i = 0; i < bs.length*8; i++)
             this.set(bs.length*8-i-1, ((bs[i / 8] >> ((7-i%8)) & 0x01) == 1));
-        }
     }
 
     /**
@@ -35,11 +37,22 @@ public class BitArray {
      * @param count Nombre de bits
      */
     public BitArray(byte[] bs, int start, int count){
-        this.bits = new ArrayList<Boolean>(Collections.nCopies(count, false));
+        this.bits = new ArrayList<>(Collections.nCopies(count, false));
         for (int i = 0; i < count; i++) {
             int bit = (bs[(start+i) / 8] >>(7-(start+i)%8)) & 0x01;
             this.set(count-i-1, bit == 1);
         }
+    }
+    /**
+     * Crée un BitArray à partir d'un long
+     * @param bits bits
+     * @param count Nombre de bits dans le long (en partant du LSB)
+     */
+    public BitArray(long bits, int count){
+        assert(count <= 64);
+        this.bits = new ArrayList<>(Collections.nCopies(count, false));
+        for (int i = 0; i < count; i++)
+            this.set(count-i-1, ((bits>>(count-1-i))&0x01L) == 1);
     }
 
     public static String bytes2Hex(byte[] bs, int offset, int len){
@@ -82,7 +95,7 @@ public class BitArray {
     }
 
     public BitArray rshift(){
-        return this.get(1, this.bits.size());
+        return this.get(1, this.bits.size()-1);
     }
 
     public BitArray rshift(int shift){
@@ -197,5 +210,45 @@ public class BitArray {
 
     public int getSize(){
         return this.bits.size();
+    }
+
+    public boolean equals(BitArray b){
+        if(b == null)
+            return false;
+        if( !(b instanceof BitArray))
+            return false;
+        if(this.bits.size() != b.bits.size())
+            return false;
+        for(int i = 0;i<this.getSize();i++)
+            if(this.bits.get(i) != b.bits.get(i))
+                return false;
+        return true;
+    }
+
+    /**
+     * Searches a bit pattern in the bit array.
+     * @param needle The pattern to look for
+     * @return The offset if >=0, -1 if not found
+     */
+    public int find(BitArray needle){
+        if(this.getSize() < needle.getSize())
+            return -1;
+        for (int i = 0; i < this.getSize() - needle.getSize(); i++) {
+            BitArray toCompare = this.getFlipped().get(i, needle.getSize()).getFlipped();
+            if (needle.equals(toCompare))
+                return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Searches a bit pattern in the bit array.
+     * @param needle The pattern to look for
+     * @param needleSize Size of the pattern
+     * @return The offset if >=0, -1 if not found
+     */
+    public int find(long needle, int needleSize){
+        BitArray needleBits = new BitArray(needle, needleSize);
+        return this.find(needleBits);
     }
 }

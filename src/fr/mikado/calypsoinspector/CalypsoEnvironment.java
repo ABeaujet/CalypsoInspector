@@ -12,16 +12,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+/**
+ * This class contains all the complementary information about the network and the structure of the card.
+ */
 public class CalypsoEnvironment {
     private HashMap<Integer, String>    stops;
     private HashMap<Integer, String>    routes;
     private ArrayList<CalypsoFile>      cardStructure;
     private int countryId;
     private int networkId;
-    private int regionId;
+    //private int regionId;
     private boolean topologyConfigured;
     private boolean cardStructureConfigured;
 
+    /**
+     * Creates an empty CalypsoEnvironment
+     */
     public CalypsoEnvironment(){
         this.routes = new HashMap<>();
         this.stops = new HashMap<>();
@@ -30,7 +36,7 @@ public class CalypsoEnvironment {
         this.cardStructureConfigured = false;
     }
 
-    private static Document openDocument(String filename){
+    public static Document openDocument(String filename){
         SAXBuilder sax = new SAXBuilder();
         Document doc;
         try {
@@ -46,6 +52,12 @@ public class CalypsoEnvironment {
         return doc;
     }
 
+    /**
+     * Loads the network topology (stops and routes) from an XML file.
+     * @param topologyFile Filename of the XML file containing topology information.
+     * @return Topology information properly loaded.
+     * @throws Exception
+     */
     public boolean setNetworkTopology(String topologyFile) throws Exception {
         Document doc = openDocument(topologyFile);
         try {
@@ -60,14 +72,14 @@ public class CalypsoEnvironment {
 
     private void parseTopologyTree(Document doc) throws Exception {
         Element root = doc.getRootElement();
-        if(root.getName() != "calypsoEnvironment") {
+        if(!root.getName().equals("calypsoEnvironment")) {
             throw new JDOMParseException("Root element should be a calypsoEnvironment.", new Throwable("throwable"));
         }
 
         this.checkCoherentEnvironment(root);
 
         Element topoElement = root.getChildren().get(0);
-        if(topoElement.getName() != "topology") {
+        if(!topoElement.getName().equals("topology")) {
             throw new JDOMParseException("First first level child element should be topology.", new Throwable("throwable"));
         }
 
@@ -88,6 +100,12 @@ public class CalypsoEnvironment {
         }
     }
 
+    /**
+     * Loads the card structure (File and their structures) from an XML file.
+     * @param cardStructureFile Filename of the XML file containing card structure information.
+     * @return Card structure information properly loaded.
+     * @throws Exception
+     */
     public boolean setCardStructure(String cardStructureFile) throws Exception {
         this.cardStructure = new ArrayList<>();
         Document doc = openDocument(cardStructureFile);
@@ -131,13 +149,13 @@ public class CalypsoEnvironment {
 
     private void parseStructureTree(Document doc) throws Exception {
         Element root = doc.getRootElement();
-        if(root.getName() != "calypsoEnvironment") {
+        if(!root.getName().equals("calypsoEnvironment")) {
             throw new JDOMParseException("Root element should be calypsoEnvironment.", new Throwable("throwable"));
         }
-        this.checkCoherentEnvironment(root);
+        //this.checkCoherentEnvironment(root);
 
         Element cardElement = root.getChildren().get(0);
-        if(cardElement.getName() != "card") {
+        if(!cardElement.getName().equals("card")) {
             throw new JDOMParseException("First first level child element should be a card.", new Throwable("throwable"));
         }
 

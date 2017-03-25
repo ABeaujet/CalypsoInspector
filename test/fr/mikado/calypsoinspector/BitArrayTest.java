@@ -91,4 +91,20 @@ public class BitArrayTest {
         long result = test.getLong();
         assertEquals(expected, result);
     }
+
+    @Test
+    public void testConstructFromLong() throws Exception{
+        BitArray expected = new BitArray(new byte[]{0x01, 0x02}, 7, 9);
+        BitArray test = new BitArray(258L, 9);
+
+        assertTrue(expected.equals(test));
+    }
+
+    @Test
+    public void testEquals() throws Exception{
+        BitArray val1 = new BitArray(new byte[]{0x01, 0x02}, 7, 9);
+        BitArray val2 = new BitArray(new byte[]{0x01, 0x02}, 7, 9);
+
+        assertTrue(val1.equals(val2));
+    }
 }

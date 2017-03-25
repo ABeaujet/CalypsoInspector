@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- sample file list (Transpole Lille) -->
+<calypsoEnvironment>
+    <card>
+        <!--<file identifier="0" type="EF" description="Unknown"/>-->
+        <file identifier="2" type="EF" description="Unknown"/>
+        <!--<file identifier="3" type="EF" description="Unknown" secured/>-->
+        <file identifier="1000" type="DF" description="Unknown">
+            <file identifier="1004" type="EF" description="Unknown"/>
+            <file identifier="1014" type="EF" description="Unknown"/>
+            <file identifier="1015" type="EF" description="Unknown"/>
+        </file>
+        <file identifier="2000" type="DF" description="Unknown">
+            <file identifier="2001" type="EF" description="Unknown"/>
+            <file identifier="2004" type="EF" description="Unknown"/>
+            <file identifier="2010" type="EF" description="Unknown"/>
+            <file identifier="2020" type="EF" description="Unknown"/>
+            <file identifier="202a" type="EF" description="Unknown"/>
+            <file identifier="202b" type="EF" description="Unknown"/>
+            <file identifier="202c" type="EF" description="Unknown"/>
+            <file identifier="202d" type="EF" description="Unknown"/>
+            <file identifier="202e" type="EF" description="Unknown"/>
+            <file identifier="202f" type="EF" description="Unknown"/>
+            <file identifier="2030" type="EF" description="Unknown"/>
+            <file identifier="2040" type="EF" description="Unknown"/>
+            <file identifier="2050" type="EF" description="Unknown"/>
+            <file identifier="2060" type="EF" description="Unknown"/>
+            <file identifier="2061" type="EF" description="Unknown"/>
+            <file identifier="2062" type="EF" description="Unknown"/>
+            <file identifier="2069" type="EF" description="Unknown"/>
+        </file>
+        <file identifier="2f10" type="EF" description="Unknown"/>
+        <file identifier="3100" type="DF" description="Unknown">
+            <!--<file identifier="3101" type="EF" description="Unknown" secured="true" />-->
+            <file identifier="3102" type="EF" description="Unknown"/>
+            <file identifier="3104" type="EF" description="Unknown"/>
+            <file identifier="3113" type="EF" description="Unknown"/>
+            <file identifier="3115" type="EF" description="Unknown"/>
+        </file>
+        <file identifier="3200" type="DF" description="Unknown">
+            <file identifier="3201" type="EF" description="Unknown"/>
+            <file identifier="3203" type="EF" description="Unknown"/>
+            <file identifier="3204" type="EF" description="Unknown"/>
+            <file identifier="321e" type="EF" description="Unknown"/>
+        </file>
+        <file identifier="3300" type="DF" description="Unknown">
+            <file identifier="3301" type="EF" description="Unknown"/>
+            <file identifier="3304" type="EF" description="Unknown"/>
+            <file identifier="3309" type="EF" description="Unknown"/>
+            <file identifier="3317" type="EF" description="Unknown"/>
+            <file identifier="3319" type="EF" description="Unknown"/>
+            <file identifier="331b" type="EF" description="Unknown"/>
+        </file>
+        <file identifier="3400" type="DF" description="Unknown">
+            <file identifier="3401" type="EF" description="Unknown"/>
+            <file identifier="3404" type="EF" description="Unknown"/>
+            <file identifier="3409" type="EF" description="Unknown"/>
+            <file identifier="3417" type="EF" description="Unknown"/>
+        </file>
+        <file identifier="3600" type="DF" description="Unknown">
+            <file identifier="3601" type="EF" description="Unknown"/>
+            <file identifier="3604" type="EF" description="Unknown"/>
+            <file identifier="3609" type="EF" description="Unknown"/>
+            <file identifier="3617" type="EF" description="Unknown"/>
+            <file identifier="3619" type="EF" description="Unknown"/>
+            <file identifier="361b" type="EF" description="Unknown"/>
+        </file>
+        <file identifier="3700" type="DF" description="Unknown">
+            <file identifier="3701" type="EF" description="Unknown"/>
+            <file identifier="3704" type="EF" description="Unknown"/>
+            <file identifier="3709" type="EF" description="Unknown"/>
+            <file identifier="3717" type="EF" description="Unknown"/>
+        </file>
+        <!--<file identifier="3f00" type="EF" description="Unknown"/>
+        <file identifier="3f04" type="EF" description="Unknown"/>-->
+    </card>
+</calypsoEnvironment>
