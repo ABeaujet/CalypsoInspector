@@ -15,11 +15,11 @@ NONE OF THE INFORMATION IN THIS REPO SHOULD BE TAKEN AS FACE VALUE. Just in case
 
 - Holder information
 - Latest check-ins (date, time, route, stop, direction, contract)
+- Holder profiles
+- File Mappings : some files (like contracts) may have several different layouts depending on other fields.
 
 ## TODO :
 
-- File Mappings : some files (like contrats) may have several different layouts depending on other fields.
-- Holder profiles
 - Contract list
 
 ## How to use:
