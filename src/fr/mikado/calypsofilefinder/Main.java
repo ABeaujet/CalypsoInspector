@@ -1,5 +1,6 @@
 package fr.mikado.calypsofilefinder;
 
+import fr.mikado.calypsoinspector.BitArray;
 import fr.mikado.calypsoinspector.CalypsoEnvironment;
 import org.jdom2.Comment;
 import org.jdom2.Document;
@@ -23,7 +24,7 @@ public class Main {
         Scanner s = new Scanner(System.in);
 
         System.out.println("\nCalypso File Finder\n");
-        System.out.println("1. Find all files, save output to fileList");
+        System.out.println("1. Find all files, save output to fileList (take some time)");
         System.out.println("2. Find in files using fileList.xml");
 
         boolean invalidChoice;
@@ -36,15 +37,23 @@ public class Main {
                     findAllFiles(getDefaultCard());
                     break;
                 case 2:
-                    System.out.print("Haystack (must be a long as hex) : 0x");
-                    long needle = Long.parseLong(s.nextLine(), 16);
-                    System.out.print("\nHaystack size : ");
-                    int needleSize = Integer.parseInt(s.nextLine());
+                    System.out.print("Bit pattern (must be a long as hex) : 0x");
+                    long pattern = Long.parseLong(s.nextLine(), 16);
+                    int patternSize;
+                    boolean firstAttempt = true;
+                    do {
+                        if(!firstAttempt)
+                            System.out.println("Invalid pattern size (must be at least 2 bits");
+                        System.out.print("\nBit pattern size : ");
+                        patternSize = Integer.parseInt(s.nextLine());
+                        firstAttempt = false;
+                    }while(patternSize <= 1);
 
                     CalypsoEnvironment cardEnv = new CalypsoEnvironment();
                     cardEnv.setCardStructure("fileList.xml");
-                    CalypsoCardSearch search = new CalypsoCardSearch(getDefaultCard(), cardEnv, needle, needleSize);
-                    System.out.println(search.search());
+                    CalypsoCardSearch search = new CalypsoCardSearch(getDefaultCard(), cardEnv, new BitArray(pattern, patternSize));
+                    search.search();
+                    search.dumpResults();
                     break;
                 default:
                     System.out.println("Invalid input");

@@ -5,6 +5,7 @@ import fr.mikado.calypsoinspector.*;
 import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import java.io.*;
+import java.util.ArrayList;
 
 public class CalypsoCardSearch {
 
@@ -42,79 +43,71 @@ public class CalypsoCardSearch {
                 sb.append("\n   Record #" + this.resultRecord.getId());
                 sb.append("\n   Bit offset " + this.offset);
                 return sb.toString();
-            }else
-                return "Bit pattern not found :(";
+            }
+            else{
+                return "Lol wut?";
+            }
         }
     }
 
-    private final Card c;
-    private final CalypsoEnvironment cardEnv;
     private final CalypsoCard card;
     private BitArray needle;
-    private SearchResult result;
+    protected ArrayList<SearchResult> results;
 
-    public CalypsoCardSearch(Card c, CalypsoEnvironment cardEnv, long needle, int needleSize) throws IOException {
-        this.c = c;
-        this.needle = new BitArray(needle, needleSize);
-        this.cardEnv = cardEnv;
+    public CalypsoCardSearch(CalypsoCard c, BitArray needle) throws IOException {
+        this.needle = needle;
+        this.card = c;
+        this.results = new ArrayList<>();
+    }
+
+    public CalypsoCardSearch(Card c, CalypsoEnvironment cardEnv, BitArray needle) throws IOException {
+        this.needle = needle;
         this.card= new CalypsoCard(c, cardEnv);
+        this.results = new ArrayList<>();
     }
 
-    private SearchResult findBitsInRecordField(CalypsoRecordField rf, BitArray bits){
-        int offset = rf.getBits().find(bits);
-        if(offset >= 0)
-            return new SearchResult(rf, offset);
-        for(CalypsoRecordField child : rf.getSubfields()) {
-            SearchResult result;
-            if ( (result = findBitsInRecordField(child, bits)) != null)
-                return result;
-        }
-        return null;
+    private void findBitsInRecordField(CalypsoRecordField rf, BitArray bits){
+        if(rf.getSubfields().size() > 0) { // if no children, search in the field bits.
+            int offset = rf.getBits().find(bits);
+            if (offset >= 0) // if the pattern is found
+                this.results.add(new SearchResult(rf, offset));
+        }else // if children, search through these
+            for(CalypsoRecordField child : rf.getSubfields())
+                findBitsInRecordField(child, bits);
     }
 
-    private SearchResult findBitsInFile(CalypsoFile f, BitArray bits){
-        if(f.getType() == CalypsoFile.CalypsoFileType.DF)
-            for(CalypsoFile child : f.getChildren()) {
-                SearchResult result;
-                if ( (result = findBitsInFile(child, bits)) != null)
-                    return result;
-            }
+    private void findBitsInFile(CalypsoFile f, BitArray bits){
+        if(f.getType() == CalypsoFile.CalypsoFileType.DF) // If file.type == DF, search in the files it contains
+            for(CalypsoFile child : f.getChildren())
+               findBitsInFile(child, bits);
         else
             for(CalypsoRecord r : f.getRecords())
-                if(r.getFields().size() != 0) {
-                    for (CalypsoRecordField rf : r.getFields()) {
-                        SearchResult result;
-                        if ((result = this.findBitsInRecordField(rf, this.needle)) != null) {
-                            System.out.println("FOUND !");
-                            return result;
-                        }
-                    }
-                }else{
-                    int offset = r.getBits().find(this.needle);
+                if(r.getFields().size() != 0) { // search for bits in the record fields if any
+                    for (CalypsoRecordField rf : r.getFields())
+                        this.findBitsInRecordField(rf, bits);
+                }else{ // If no fields in the record, search directly in the record bits.
+                    int offset = r.getBits().find(bits);
                     if(offset >= 0){
                         System.out.println("FOUND !");
-                        return new SearchResult(r, offset);
+                        this.results.add(new SearchResult(r, offset));
                     }
                 }
-        return null;
     }
 
-    public SearchResult search() throws CardException {
+    public void search() throws CardException {
         System.out.println("Reading card...");
         this.card.read();
         System.out.println("Searching...");
-        this.result = null;
-        for(CalypsoFile f : this.cardEnv.getFiles()){
-            SearchResult result;
-            if( (result = findBitsInFile(f, needle)) != null) {
-                this.result = result;
-                break;
-            }
-        }
+        for(CalypsoFile f : this.card.getEnvironment().getFiles())
+            findBitsInFile(f, needle);
         this.card.dump();
-        if(this.result == null)
-            this.result = new SearchResult();
-        return this.result;
+    }
+
+    public void dumpResults(){
+        if(this.results.size() > 0)
+            this.results.forEach(System.out::println);
+        else
+            System.out.println("No results found :(");
     }
 
 }

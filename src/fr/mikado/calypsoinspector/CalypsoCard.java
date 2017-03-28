@@ -193,4 +193,8 @@ public class CalypsoCard {
             }
         }
     }
+
+    public CalypsoEnvironment getEnvironment(){
+        return this.env;
+    }
 }
