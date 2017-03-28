@@ -1,16 +1,40 @@
-CalypsoInspector
-====
+#CalypsoInspector
 
-Petit outil en Java permettant de consulter le contenu des cartes PassPass et autres conformes au standard Calypso et à la norme Intercode. (Navigo, RavKav...)
-Fondé essentiellement sur la doc ISO 7816-4 et quelques infos par ci par là.
+This tools reads Calypso smartcards and tries to parse data. It is primarily aimed at decoding data inside public transport cards complying to the Intercode standard.
 
-Projet amené à être porté sous Android avec une interface sympa si tout va bien.
+This is essentially based on ISO7816-4 and some pieces of information here and there (access to official documentation for Intercode/Intertic is charged 136.35€).
 
-Contenu consultable acutellement :
-----
+This project should be ported to Android and support external OTG readers (ACR122U ?)
 
-- Informations titulaire
-- Dernières validations
+This project is tested with the cards used in Lille, France (PassPass or Pass Pass cards). It should also work with Navigo cards, though some changes are necessary due to the complex topology of Paris public transport network (zones, check-outs...).
+I will make this project compatible with Navigo cards once I get a new one, but that shouldn't be that hard.
+
+##Currently available data :
+
+- Holder information
+- Latest check-ins (date, time, route, stop, direction)
+- Holder profiles (very soon)
+- Contracts (maybe soon)
+
+##How to use:
+
+First, if you don't know the card structure, you may want to build one based on educated guesses using CalypsoFileFinder (see below).
+
+Each public transport operator has its own ticketing policy and thus card structure. But in practice, LFIs don't change that much, and the content should be parsed quite nicely out of the box (except for route and stop names which are network dependant).
+
+For optimal results, copy and customize `CalypsoLille.xml` with your own card structure (maybe you'll find some PDFs here and there from your network operator).
+Then, copy and customize `TopoLille.xml` to add your own metro/bus/... stops and routes. Again, interesting PDFs can be found laying on non .htaccess protected directories.
 
 
+#CalypsoFileFinder:
+
+This utility enumerates all the files contained on the card (option #1), and allows you to search for bit patterns in the files (#2).
+If a card structure is loaded, you can search through record fields as well, and get an nice and readable output.
+
+Thus, rebuilding the card structure becomes quite easy.
+
+First, you have to list enumerate the files on the card using CalypsoFileFinder (option #1).
+Then, edit `fileList.out.xml` to configure the card structure (DFs, file descriptions, remove useless files..) and rename it to `fileList.xml` in order to search through those files.
+
+Once you're done, edit `fileList.xml` to make it look like `CalypsoLille.xml` and move on to CalypsoInspector.
 
