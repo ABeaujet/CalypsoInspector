@@ -15,8 +15,7 @@ public class Main {
         passPass.read();
         passPass.dump();
         passPass.dumpTrips();
-        // TODO : Profiles
-        //passPass.dumpProfiles();
+        passPass.dumpProfiles();
         // TODO : Contracts
         //passPass.dumpContracts();
         passPass.disconnect();

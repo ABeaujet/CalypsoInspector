@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<calypsoEnvironment country="France" countryId="250" operator="Transpole/SNCF" networkId="149" currency="euro">
+    <profiles>
+        <profile id="179" name="Scolaire externe"        description="Ce profil vous a été émis par le conseil général du Nord dans le cadre de votre scolarisation."/>
+        <profile id="180" name="Scolaire stagiaire "     description="Ce profil vous a été émis par le conseil général du Nord dans le cadre de votre stage."/>
+        <profile id="181" name="Scolaire interne"        description="Ce profil vous a été émis par le conseil général du Nord dans le cadre de votre scolarisation."/>
+        <profile id="191" name="4 A 25 ANS - MEL"        description="Ce profil est réservé aux personnes agées de moins de 25 ans habitant la Métropole Européenne de Lille. Il vous permet de bénéficier de réductions de 50%."/>
+        <profile id="195" name="65 ANS ET PLUS - MEL"    description="Ce profil est réservé aux personnes agées de plus de 65 ans habitant la Métropole Européenne de Lille. Il vous permet de bénéficier de réductions de 50%."/>
+        <profile id="197" name="65 ANS ET PLUS QF0 MEL"  description="Ce profil est réservé aux personnes agées de plus de 65 ans habitant la Métropole Européenne de Lille payant moins de 300€ d'impôts. Il vous permet de bénéficier d'abonnement mensuel à 7€ par mois."/>
+        <profile id="199" name="RSA Maitre - MEL"        description="Ce profil est réservé aux titulaires du RSA habitant la Métropole Européenne de Lille."/>
+        <profile id="200" name="RSA Ayant Droit - MEL"   description="Ce profil est réservé aux ayant droit du RSA habitant la Métropole Européenne de Lille."/>
+        <profile id="201" name="Iris - MEL"              description="Ce profil est réservé aux travailleurs privés d'emploi et habitant la Métropole Européenne de Lille."/>
+        <profile id="206" name="Handipole - MEL"         description="Handipole est un service de substitution à Transpole pour les personnes qui ne pourraient pas utiliser le réseau."/>
+        <profile id="207" name="Coquelicot - MEL"        description="Ce profil est réservé aux malvoyants ou non voyants habitant la Métropole Européenne de Lille et titulaires d'une carte d'invalidité portant la mention cécité."/>
+        <profile id="230" name="4 A 25 ANS QF1-MEL"      description="Ce profil est réservé aux personnes agées de moins de 25 ans habitant la Métropole Européenne de Lille ayant un quotient familial CAF inférieur à 374€."/>
+        <profile id="231" name="4 A 25 ANS QF2-MEL"      description="Ce profil est réservé aux personnes agées de moins de 25 ans habitant la Métropole Européenne de Lille ayant un quotient familial CAF compris entre 375€ et 537€."/>
+        <profile id="232" name="4 A 25 ANS QF3-MEL"      description="Ce profil est réservé aux personnes agées de moins de 25 ans habitant la Métropole Européenne de Lille ayant un quotient familial CAF compris entre 538€ et 716€."/>
+        <profile id="233" name="65 ANS ET PLUS QF1 MEL"  description="Ce profil est réservé aux personnes agées de plus de 65 ans habitant la Métropole Européenne de Lille ayant un quotient familial CAF inférieur à 374€."/>
+        <profile id="234" name="65 ANS ET PLUS QF2 MEL"  description="Ce profil est réservé aux personnes agées de plus de 65 ans habitant la Métropole Européenne de Lille ayant un quotient familial CAF compris entre 375€ et 537€."/>
+        <profile id="235" name="65 ANS ET PLUS QF3 MEL"  description="Ce profil est réservé aux personnes agées de plus de 65 ans habitant la Métropole Européenne de Lille ayant un quotient familial CAF compris entre 538€ et 716€."/>
+        <profile id="236" name="26 A 64 ANS QF1-MEL"     description="Ce profil est réservé aux personnes agées entre 26 et 64 ans habitant la Métropole Européenne de Lille ayant un quotient familial CAF inférieur à 374€."/>
+        <profile id="237" name="26 A 64 ANS QF2-MEL"     description="Ce profil est réservé aux personnes agées entre 26 et 64 ans habitant la Métropole Européenne de Lille ayant un quotient familial CAF compris entre 375€ et 537€."/>
+        <profile id="238" name="26 A 64 ANS QF3-MEL"     description="Ce profil est réservé aux personnes agées entre 26 et 64 ans habitant la Métropole Européenne de Lille ayant un quotient familial CAF compris entre 538€ et 716€."/>
+    </profiles>
+</calypsoEnvironment>

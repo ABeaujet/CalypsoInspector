@@ -19,8 +19,8 @@ import static fr.mikado.calypsoinspector.CalypsoRecordField.FieldType.*;
 public class CalypsoRecordField {
 
     enum FieldType {
-        Bitmap, Pointer, Date, Time, DateTime, Amount, Number, NetworkId, BcdDate, String, Repeat, Route, Stop, Vehicle, Direction, PayMethod, YesNo, Name, Gender, ContractStatus, ContractType, ContractTariff, ContractPointer, Undefined;
-        public static String[] n = {"Bitmap", "Pointer", "Date", "Time", "DateTime", "Amount", "Number", "NetworkId", "BcdDate", "String", "Repeat", "Route", "Stop", "Vehicle", "Direction", "PayMethod", "YesNo", "Name", "Gender", "ContractStatus", "ContractType", "ContractTariff", "ContractPointer", "Undefined"};
+        Bitmap, Pointer, Date, Time, DateTime, Amount, Number, NetworkId, BcdDate, String, Repeat, Route, Stop, Vehicle, Direction, PayMethod, YesNo, Name, Gender, ContractStatus, ContractType, ContractTariff, ContractPointer, Profile, Undefined;
+        public static String[] n = {"Bitmap", "Pointer", "Date", "Time", "DateTime", "Amount", "Number", "NetworkId", "BcdDate", "String", "Repeat", "Route", "Stop", "Vehicle", "Direction", "PayMethod", "YesNo", "Name", "Gender", "ContractStatus", "ContractType", "ContractTariff", "ContractPointer", "Profile", "Undefined"};
         public static int c= 0;
         private int cc= 0;
         FieldType(){ this.cc = FieldType.getC(); }
@@ -89,6 +89,7 @@ public class CalypsoRecordField {
 
     private CalypsoEnvironment env;
     private CalypsoRecord parentRecord;
+    private CalypsoRecordField parentField;
     private String description;
     private int length;
     private FieldType type;
@@ -105,13 +106,14 @@ public class CalypsoRecordField {
      * @param type Data type of the field
      * @param env Current Calypso Environment (can be null)
      */
-    public CalypsoRecordField(String description, int size, CalypsoRecordField.FieldType type, @Nullable CalypsoEnvironment env){
+    public CalypsoRecordField(String description, int size, CalypsoRecordField.FieldType type, CalypsoRecordField parentField, @Nullable CalypsoEnvironment env){
         this.description = description;
         this.length = size;
         this.subfields = new ArrayList<>();
         this.subfieldsByName= new HashMap<>();
         this.type = type;
         this.env = env;
+        this.parentField = parentField;
     }
 
     // copy ctor
@@ -126,6 +128,7 @@ public class CalypsoRecordField {
         this.subfieldsByName = new HashMap<>();
         for(CalypsoRecordField ff : f.subfields) {
             CalypsoRecordField subfield = new CalypsoRecordField(ff);
+            subfield.setParentField(this);
             this.subfields.add(subfield);
             this.subfieldsByName.put(ff.getDescription(), subfield);
         }
@@ -178,6 +181,8 @@ public class CalypsoRecordField {
                 return ContractTariff;
             case "contractpointer":
                 return ContractPointer;
+            case "profile":
+                return Profile;
             default:
                 return Undefined;
         }
@@ -210,6 +215,9 @@ public class CalypsoRecordField {
      * @throws IndexOutOfBoundsException
      */
     public int fill(byte[] buffer, int offset) throws IndexOutOfBoundsException{
+        if(this.length == 0)
+            return 0;
+
         this.bits = new BitArray(buffer, offset, this.length);
         int consumed = this.length;
         this.filled = true;
@@ -362,13 +370,57 @@ public class CalypsoRecordField {
                 int exploitant = bits.get( 0, 4).getInt();
                 int type       = bits.get( 4, 8).getInt();
                 int priorite   = bits.get(12, 4).getInt();
-                this.convertedValue = "exploitant=" + exploitant + ", type=" + type + ", priorite=" + priorite;
+                this.convertedValue = "" + exploitant + " " + Integer.toHexString(type) + "h " + priorite;
                 break;
             case ContractPointer:
                 int pointer = bits.getInt();
                 this.env.contractPointers.add(pointer);
                 Collections.sort(this.env.contractPointers);
                 this.convertedValue = ""+Integer.toHexString(pointer);
+
+                CalypsoRecordField tariff = this.getParentField().getSubfield("BestContractsTariff");
+                if(tariff != null) {
+                    String mappingName = tariff.getConvertedValue().split(" ")[1];
+                    CalypsoFile contracts = this.env.getFile("Contracts");
+                    contracts.addFileMapping(pointer, mappingName);
+                    this.convertedValue = Integer.toHexString(pointer) + " -> " + mappingName;
+                }
+                break;
+            case Vehicle:
+                switch(bits.getInt()){
+                    case 0:
+                        this.convertedValue = "unspecified";
+                        break;
+                    case 1:
+                        this.convertedValue = "bus urbain";
+                        break;
+                    case 2:
+                        this.convertedValue = "bus interurbain";
+                        break;
+                    case 3:
+                        this.convertedValue = "metro";
+                        break;
+                    case 4:
+                        this.convertedValue = "tramway";
+                        break;
+                    case 5:
+                        this.convertedValue = "train";
+                        break;
+                    case 6:
+                        this.convertedValue = "TGV";
+                        break;
+                    case 7:
+                        this.convertedValue = "busTrain";
+                        break;
+                    default:
+                        this.convertedValue = "unknown";
+                }
+                break;
+            case Profile:
+                if(this.env.areProfilesConfigured())
+                    this.convertedValue = this.env.getProfileName(bits.getInt());
+                if(this.convertedValue == null)
+                    this.convertedValue = ""+bits.getInt();
                 break;
             default:  // et donc Undefined
                 this.convertedValue = this.bits.toHex();
@@ -424,6 +476,12 @@ public class CalypsoRecordField {
     }
     public CalypsoRecordField getSubfield(String description){
         return this.subfieldsByName.containsKey(description) ? this.subfieldsByName.get(description) : null;
+    }
+    public void setParentField(CalypsoRecordField field){
+        this.parentField = field;
+    }
+    public CalypsoRecordField getParentField(){
+        return this.parentField;
     }
     public CalypsoRecord getParentRecord(){
         return this.parentRecord;

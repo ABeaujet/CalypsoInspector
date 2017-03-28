@@ -4,6 +4,8 @@ import com.sun.istack.internal.Nullable;
 import org.jdom2.Element;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -27,8 +29,11 @@ public class CalypsoFile {
     private ArrayList<CalypsoFile> children;
     private CalypsoFileType type;
 
-    private ArrayList<CalypsoRecordField> fields;
+    private HashMap<String, ArrayList<CalypsoRecordField>> fileMappings; // available mappings, by name
+    private HashMap<Integer, ArrayList<CalypsoRecordField>> mappings; // mapping for each record, ordered
+    private ArrayList<CalypsoRecordField> activeMapping; // mapping for the next record
     private ArrayList<CalypsoRecord> records;
+    private boolean isDefaultMappingLoaded;
 
     /**
      * Creates a Calypso File from an XML node.
@@ -38,6 +43,11 @@ public class CalypsoFile {
     public CalypsoFile(Element e, @Nullable CalypsoEnvironment env){
         this.children = new ArrayList<>();
         this.records = new ArrayList<>();
+
+        this.fileMappings = new HashMap<>();
+        this.mappings = new HashMap<>();
+        this.activeMapping = null;
+        this.isDefaultMappingLoaded = false;
 
         String LFIStr = e.getAttributeValue("LFI");
         if(LFIStr != null)
@@ -49,11 +59,27 @@ public class CalypsoFile {
         this.description = e.getAttributeValue("description");
         this.type = (e.getAttributeValue("type").equals("DF") ? CalypsoFileType.DF : CalypsoFileType.EF);
 
-        if(this.type == CalypsoFileType.EF) {
-            this.fields = new ArrayList<>();
-            for (Element ee : e.getChildren())
-                this.fields.add(new CalypsoRecordField(ee, env));
-        }
+        String mappingsAttr = e.getAttributeValue("multipleMappings");
+        if(mappingsAttr != null && (mappingsAttr.equals("yes") || mappingsAttr.equals("true")))
+            for(Element ee : e.getChildren()) {
+                ArrayList<CalypsoRecordField> mapping = parseFileStructure(ee, env);
+                this.fileMappings.put(ee.getAttributeValue("name"), mapping);
+                String isDefaultMappingStr = ee.getAttributeValue("default");
+                if (isDefaultMappingStr != null && (isDefaultMappingStr.equals("yes") || isDefaultMappingStr.equals("true"))) {
+                    this.activeMapping = mapping;
+                    isDefaultMappingLoaded = true;
+                }
+            }
+        else
+            if (this.type == CalypsoFileType.EF)
+                this.activeMapping = parseFileStructure(e, env);
+    }
+
+    private ArrayList<CalypsoRecordField> parseFileStructure(Element e, CalypsoEnvironment env){
+        ArrayList<CalypsoRecordField> fields = new ArrayList<>();
+        for (Element ee : e.getChildren())
+            fields.add(new CalypsoRecordField(ee, env));
+        return fields;
     }
 
     public String getFullPath(){
@@ -76,8 +102,16 @@ public class CalypsoFile {
      * @param buffer Byte buffer in the READ RECORD APDU response.
      */
     public void newRecord(byte[] buffer){
-        CalypsoRecord r = new CalypsoRecord(this.fields, this);
+        if(this.mappings.size() > this.records.size())
+            this.activeMapping = new ArrayList<ArrayList>(this.mappings.values()).get(this.records.size());
+
+        CalypsoRecord r = new CalypsoRecord(this.activeMapping, this);
         r.fillRecord(buffer);
+        for(Map.Entry<String, ArrayList<CalypsoRecordField>> entry : this.fileMappings.entrySet())
+            if(entry.getValue() == this.activeMapping) {
+                r.setMappingName(entry.getKey());
+                break;
+            }
         this.records.add(r);
     }
 
@@ -91,8 +125,11 @@ public class CalypsoFile {
     public void dumpStructure(int n){
         System.out.println(nesting(n)+"File " + this.getFullPath() + " : " + this.description);
         if(this.type == CalypsoFileType.EF)
-            for(CalypsoRecordField f : this.fields)
-                f.print(n+1);
+            for(Map.Entry<String, ArrayList<CalypsoRecordField>> mapping : this.fileMappings.entrySet()) {
+                System.out.println(nesting(n+1) + "File mapping \"" + mapping.getKey() + "\" :");
+                for (CalypsoRecordField f : mapping.getValue())
+                    f.print(n + 2);
+            }
         else
             for(CalypsoFile c : this.children)
                 c.dumpStructure(n+1);
@@ -136,4 +173,46 @@ public class CalypsoFile {
         return records;
     }
 
+    public boolean addFileMapping(int index, String mappingName){
+        ArrayList<CalypsoRecordField> mapping = this.fileMappings.get(mappingName);
+        if(mapping == null)
+            return false;
+        if(isDefaultMappingLoaded) {
+            this.mappings.clear();
+            isDefaultMappingLoaded = false;
+        }
+        this.mappings.put(index, mapping);
+        return true;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

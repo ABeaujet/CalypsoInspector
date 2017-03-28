@@ -11,192 +11,255 @@
         </file>
         <file LFI="2000" type="DF" description="ticketing">
             <file LFI="2001" SFI="07" type="EF" description="Environment, Holder">
-                <field description="EnvVersionNumber"                   length="6"  type="undefined"/>
-                <field description="Env"                                length="7"  type="bitmap">
-                    <field description="EnvNetworkId"                   length="24" type="networkId"/>
-                    <field description="EnvApplicationIssuerId"         length="8"  type="number"/>
-                    <field description="EnvApplicationValidityEndDate"  length="14" type="date"/>
-                    <field description="EnvPayMethod"                   length="11" type="paymethod"/>
-                    <field description="EnvAuthenticator"               length="16" type="undefined"/>
-                    <field description="EnvSelectList"                  length="32" type="undefined"/>
-                    <field description="EnvData"                        length="2"  type="bitmap">
-                        <field description="EnvCardStatus"              length="1"  type="undefined"/>
-                        <field description="EnvExtra"                   length="0"  type="undefined"/>
+                <field description="EnvVersionNumber"                        length="6"  type="undefined"/>
+                <field description="Env"                                     length="7"  type="bitmap">
+                    <field description="EnvNetworkId"                        length="24" type="networkId"/>
+                    <field description="EnvApplicationIssuerId"              length="8"  type="number"/>
+                    <field description="EnvApplicationValidityEndDate"       length="14" type="date"/>
+                    <field description="EnvPayMethod"                        length="11" type="paymethod"/>
+                    <field description="EnvAuthenticator"                    length="16" type="undefined"/>
+                    <field description="EnvSelectList"                       length="32" type="undefined"/>
+                    <field description="EnvData"                             length="2"  type="bitmap">
+                        <field description="EnvCardStatus"                   length="1"  type="undefined"/>
+                        <field description="EnvExtra"                        length="0"  type="undefined"/>
                     </field>
                 </field>
-                <field description="Holder Bitmap"                      length="8"  type="bitmap">
-                    <field description="Holder Name"                    length="2"  type="bitmap">
-                        <field description="Holder Surname"             length="85" type="string"/>
-                        <field description="Holder Forename"            length="85" type="string"/>
+                <field description="Holder Bitmap"                           length="8"  type="bitmap">
+                    <field description="Holder Name"                         length="2"  type="bitmap">
+                        <field description="Holder Surname"                  length="85" type="string"/>
+                        <field description="Holder Forename"                 length="85" type="string"/>
                     </field>
-                    <field description="Holder Birth"                   length="2"  type="bitmap">
-                        <field description="Birth Date"                 length="32" type="BCDDate"/>
-                        <field description="Birth Place"                length="115" type="string"/>
+                    <field description="Holder Birth"                        length="2"  type="bitmap">
+                        <field description="Birth Date"                      length="32" type="BCDDate"/>
+                        <field description="Birth Place"                     length="115" type="string"/>
                     </field>
-                    <field description="Holder Birthname"               length="85" type="string"/>
-                    <field description="Holder Id Number"               length="32" type="number"/>
-                    <field description="Holder Country Alpha"           length="24" type="undefined"/>
-                    <field description="Holder Company"                 length="32" type="undefined"/>
-                    <field description="Holder Profiles(0..4)"          length="4"  type="repeat">
-                        <field description="Profile Bitmap"             length="3"  type="bitmap">
-                            <field description="Network ID"             length="24" type="undefined"/> <!-- networkId -->
-                            <field description="Profile Number"         length="8"  type="number"/>
-                            <field description="Profile Date"           length="14" type="date"/>
+                    <field description="Holder Birthname"                    length="85" type="string"/>
+                    <field description="Holder Id Number"                    length="32" type="number"/>
+                    <field description="Holder Country Alpha"                length="24" type="undefined"/>
+                    <field description="Holder Company"                      length="32" type="undefined"/>
+                    <field description="Holder Profiles(0..4)"               length="4"  type="repeat">
+                        <field description="Profile Bitmap"                  length="3"  type="bitmap">
+                            <field description="Network ID"                  length="24" type="undefined"/> <!-- networkId -->
+                            <field description="Profile Number"              length="8"  type="profile"/>
+                            <field description="Profile Date"                length="14" type="date"/>
                         </field>
                     </field>
-                    <field description="Holder Data"                    length="12" type="bitmap">
-                        <field description="HolderDataCardStatus"               length="4"  type="undefined"/>
-                        <field description="HolderDataTelereglement"            length="4"  type="undefined"/>
-                        <field description="HolderDataResidence"                length="17" type="undefined"/>
-                        <field description="HolderDataCommercialID"             length="6"  type="undefined"/>
-                        <field description="HolderDataWorkPlace"                length="17"  type="undefined"/>
-                        <field description="HolderDataStudyPlace"               length="17"  type="undefined"/>
-                        <field description="HolderDataSaleDevice"               length="16"  type="undefined"/>
-                        <field description="HolderDataAuthenticator"            length="16"  type="undefined"/>
-                        <field description="HolderDataProfileStartDate1"        length="14"  type="undefined"/>
-                        <field description="HolderDataProfileStartDate2"        length="14"  type="undefined"/>
-                        <field description="HolderDataProfileStartDate3"        length="14"  type="undefined"/>
-                        <field description="HolderDataProfileStartDate4"        length="14"  type="undefined"/>
+                    <field description="Holder Data"                         length="12" type="bitmap">
+                        <field description="HolderDataCardStatus"            length="4"  type="undefined"/>
+                        <field description="HolderDataTelereglement"         length="4"  type="undefined"/>
+                        <field description="HolderDataResidence"             length="17" type="undefined"/>
+                        <field description="HolderDataCommercialID"          length="6"  type="undefined"/>
+                        <field description="HolderDataWorkPlace"             length="17"  type="undefined"/>
+                        <field description="HolderDataStudyPlace"            length="17"  type="undefined"/>
+                        <field description="HolderDataSaleDevice"            length="16"  type="undefined"/>
+                        <field description="HolderDataAuthenticator"         length="16"  type="undefined"/>
+                        <field description="HolderDataProfileStartDate1"     length="14"  type="undefined"/>
+                        <field description="HolderDataProfileStartDate2"     length="14"  type="undefined"/>
+                        <field description="HolderDataProfileStartDate3"     length="14"  type="undefined"/>
+                        <field description="HolderDataProfileStartDate4"     length="14"  type="undefined"/>
                     </field>
                 </field>
             </file>
             <file LFI="2010" SFI="08" type="EF" description="Events">
-                <field description="Event Date"                         length="14"  type="date" />
-                <field description="Event Time"                         length="11"  type="time" />
-                <field description="Event"                              length="28"  type="bitmap">
-                    <field description="EventDisplayData"               length="8"   type="undefined"/>
-                    <field description="EventNetworkId"                 length="24"  type="undefined"/><!-- networkId -->
-                    <field description="EventCode"                      length="8"   type="undefined"/>
-                    <field description="EventResult"                    length="8"   type="undefined"/>
-                    <field description="EventServiceProvider"           length="8"   type="undefined"/>
-                    <field description="EventNotOkCounter"              length="8"   type="undefined"/>
-                    <field description="EventSerialNumber"              length="24"  type="undefined"/>
-                    <field description="EventDestination"               length="16"  type="undefined"/>
-                    <field description="EventLocationId"                length="16"  type="stop"/>
-                    <field description="EventLocationGate"              length="8"   type="undefined"/>
-                    <field description="EventDevice"                    length="16"  type="undefined"/>
-                    <field description="EventRouteNumber"               length="16"  type="route"/>
-                    <field description="EventRouteVariant"              length="8"   type="undefined"/>
-                    <field description="EventJourneyRun"                length="16"  type="undefined"/>
-                    <field description="EventVehicleId"                 length="16"  type="undefined"/>
-                    <field description="EventVehicleClass"              length="8"   type="undefined"/>
-                    <field description="EventLocationType"              length="5"   type="undefined"/>
-                    <field description="EventEmployee"                  length="240" type="undefined"/>
-                    <field description="EventLocationReference"         length="16"  type="undefined"/>
-                    <field description="EventJourneyInterchanges"       length="8"   type="undefined"/>
-                    <field description="EventPeriodJourney"             length="16"  type="undefined"/>
-                    <field description="EventTotalJourneys"             length="16"  type="undefined"/>
-                    <field description="EventJourneyDistance"           length="16"  type="undefined"/>
-                    <field description="EventPriceAmount"               length="16"  type="amount"/>
-                    <field description="EventPriceUnit"                 length="16"  type="undefined"/>
-                    <field description="EventContractPointer"           length="5"   type="undefined"/>
-                    <field description="EventAuthenticator"             length="16"  type="undefined"/>
-                    <field description="EventData"                      length="5"   type="bitmap">
-                        <field description="EventDataFristStamp"        length="14"  type="date"/>
-                        <field description="EventDataFristStamp"        length="11"  type="time"/>
-                        <field description="EventDataSimulation"        length="1"   type="yesno"/>
-                        <field description="EventDataTrip"              length="2"   type="undefined"/>
-                        <field description="EventDataRouteDirection"    length="2"   type="number"/>
+                <field description="Event Date"                              length="14"  type="date" />
+                <field description="Event Time"                              length="11"  type="time" />
+                <field description="Event"                                   length="28"  type="bitmap">
+                    <field description="EventDisplayData"                    length="8"   type="undefined"/>
+                    <field description="EventNetworkId"                      length="24"  type="undefined"/><!-- networkId -->
+                    <field description="EventCode"                           length="8"   type="undefined"/>
+                    <field description="EventResult"                         length="8"   type="undefined"/>
+                    <field description="EventServiceProvider"                length="8"   type="undefined"/>
+                    <field description="EventNotOkCounter"                   length="8"   type="undefined"/>
+                    <field description="EventSerialNumber"                   length="24"  type="undefined"/>
+                    <field description="EventDestination"                    length="16"  type="undefined"/>
+                    <field description="EventLocationId"                     length="16"  type="stop"/>
+                    <field description="EventLocationGate"                   length="8"   type="undefined"/>
+                    <field description="EventDevice"                         length="16"  type="undefined"/>
+                    <field description="EventRouteNumber"                    length="16"  type="route"/>
+                    <field description="EventRouteVariant"                   length="8"   type="undefined"/>
+                    <field description="EventJourneyRun"                     length="16"  type="undefined"/>
+                    <field description="EventVehicleId"                      length="16"  type="undefined"/>
+                    <field description="EventVehicleClass"                   length="8"   type="undefined"/>
+                    <field description="EventLocationType"                   length="5"   type="undefined"/>
+                    <field description="EventEmployee"                       length="240" type="undefined"/>
+                    <field description="EventLocationReference"              length="16"  type="undefined"/>
+                    <field description="EventJourneyInterchanges"            length="8"   type="undefined"/>
+                    <field description="EventPeriodJourney"                  length="16"  type="undefined"/>
+                    <field description="EventTotalJourneys"                  length="16"  type="undefined"/>
+                    <field description="EventJourneyDistance"                length="16"  type="undefined"/>
+                    <field description="EventPriceAmount"                    length="16"  type="amount"/>
+                    <field description="EventPriceUnit"                      length="16"  type="undefined"/>
+                    <field description="EventContractPointer"                length="5"   type="undefined"/>
+                    <field description="EventAuthenticator"                  length="16"  type="undefined"/>
+                    <field description="EventData"                           length="5"   type="bitmap">
+                        <field description="EventDataFirstStamp"             length="14"  type="date"/>
+                        <field description="EventDataFirstStamp"             length="11"  type="time"/>
+                        <field description="EventDataSimulation"             length="1"   type="yesno"/>
+                        <field description="EventDataTrip"                   length="2"   type="undefined"/>
+                        <field description="EventDataRouteDirection"         length="2"   type="number"/>
                     </field>
                 </field>
             </file>
+            <!-- Contract list MUST be processes before Contracts since it determines the mappings of contract records. -->
             <file LFI="2050" SFI="1E" type="EF" description="Contract List">
-                <field description="BestContractCount"                  length="4"   type="repeat">
-                    <field description="BestContract"                   length="3"   type="bitmap">
-                        <field description="BestContractsNetworkId"     length="24"  type="undefined"/> <!-- networkId -->
-                        <field description="BestContractsTariff"        length="16"  type="contractTariff"/>
-                        <field description="BestContractsPointer"       length="5"   type="contractPointer"/>
+                <field description="BestContractCount"                       length="4"   type="repeat">
+                    <field description="BestContract"                        length="3"   type="bitmap">
+                        <field description="BestContractsNetworkId"          length="24"  type="undefined"/> <!-- networkId -->
+                        <field description="BestContractsTariff"             length="16"  type="contractTariff"/>
+                        <field description="BestContractsPointer"            length="5"   type="contractPointer"/>
                     </field>
                 </field>
             </file>
-            <file LFI="2030" type="EF" description="Contracts">
-                <field description="PublicTransportContractBitmap"      length="7"   type="bitmap">
-                    <field description="ContractProvider"               length="8"   type="undefined"/>
-                    <field description="ContractType"                   length="16"  type="contractType"/>
-                    <field description="ContractSerialNumber"           length="32"  type="undefined"/>
-                    <field description="ContractPassengerClass"         length="8"   type="number"/>
-                    <field description="ContractValidityInfo"           length="2"   type="bitmap">
-                        <field description="ContractValidityStartDate"  length="14"  type="date"/>
-                        <field description="ContractValidityEndDate"    length="14"  type="date"/>
+            <file LFI="2030" type="EF" description="Contracts" multipleMappings="yes">
+                <fileMapping name="17h">
+                    <field description="PublicTransportContractBitmap"       length="7"   type="bitmap">
+                        <field description="ContractProvider"                length="8"   type="undefined"/>
+                        <field description="ContractType"                    length="16"  type="contractType"/>
+                        <field description="ContractSerialNumber"            length="32"  type="undefined"/>
+                        <field description="ContractPassengerClass"          length="8"   type="number"/>
+                        <field description="ContractValidityInfo"            length="2"   type="bitmap">
+                            <field description="ContractValidityStartDate"   length="14"  type="date"/>
+                            <field description="ContractValidityEndDate"     length="14"  type="date"/>
+                        </field>
+                        <field description="ContractStatus"                  length="8"   type="contractStatus"/>
+                        <field description="ContractDataExtendedMapping"     length="10"  type="bitmap">
+                            <field description="ContractDataOVD1"            length="48"  type="undefined"/>
+                            <field description="ContractDataOD2"             length="32"  type="undefined"/>
+                            <field description="ContractDataValidityZones"   length="16"  type="undefined"/>
+                            <field description="ContractDataSale"            length="38"  type="undefined"/>
+                            <field description="ContractDataPay"             length="28"  type="undefined"/>
+                            <field description="ContractDataPassengerTotal"  length="6"   type="undefined"/>
+                            <field description="ContractDataPeriodicity"     length="22"  type="undefined"/>
+                            <field description="ContractDataSold"            length="13"  type="undefined"/>
+                            <field description="ContractDataVehicleAllowed"  length="4"   type="undefined"/>
+                            <field description="ContractDataLinkedContract"  length="5"   type="undefined"/>
+                        </field>
                     </field>
-                    <field description="ContractStatus"                 length="8"   type="contractStatus"/>
-                    <field description="ContractDataExtendedMapping"    length="10"  type="bitmap">
-                        <field description="ContractDataOVD1"           length="48"  type="undefined"/>
-                        <field description="ContractDataOD2"            length="32"  type="undefined"/>
-                        <field description="ContractDataValidityZones"  length="16"  type="undefined"/>
-                        <field description="ContractDataSale"           length="38"  type="undefined"/>
-                        <field description="ContractDataPay"            length="28"  type="undefined"/>
-                        <field description="ContractDataPassengerTotal" length="6"   type="undefined"/>
-                        <field description="ContractDataPeriodicity"    length="22"  type="undefined"/>
-                        <field description="ContractDataSold"           length="13"  type="undefined"/>
-                        <field description="ContractDataVehicleAllowed" length="4"   type="undefined"/>
-                        <field description="ContractDataLinkedContract" length="5"   type="undefined"/>
+                </fileMapping>
+                <fileMapping name="20h">
+                    <field description="PublicTransportContractBitmap"       length="7"   type="bitmap">
+                        <field description="ContractProvider"                length="8"   type="undefined"/>
+                        <field description="ContractType"                    length="16"  type="contractType"/>
+                        <field description="ContractSerialNumber"            length="32"  type="undefined"/>
+                        <field description="ContractPassengerClass"          length="8"   type="number"/>
+                        <field description="ContractValidityInfo"            length="2"   type="bitmap">
+                            <field description="ContractValidityStartDate"   length="14"  type="date"/>
+                            <field description="ContractValidityEndDate"     length="14"  type="date"/>
+                        </field>
+                        <field description="ContractStatus"                  length="8"   type="contractStatus"/>
+                        <field description="ContractData"                    length="0"   type="undefined"/>
                     </field>
-                </field>
+                    <field description="ContractDataExtendedMapping"         length="12"  type="bitmap">
+                        <field description="ContractDataJourneyOrigin"       length="16"  type="undefined"/>
+                        <field description="ContractDataJourneyDestination"  length="16"  type="undefined"/>
+                        <field description="ContractDataValidityZonesOrigin" length="8"   type="undefined"/>
+                        <field description="ContractDataValidityZonesOrigin" length="8"   type="undefined"/>
+                        <field description="ContractDataPayMethod"           length="11"  type="undefined"/>
+                        <field description="ContractDataPriceAmount"         length="16"  type="undefined"/>
+                        <field description="ContractDataSaleDate"            length="14"  type="undefined"/>
+                        <field description="ContractDataSaleAgent"           length="8"   type="undefined"/>
+                        <field description="ContractDataSaleDevice"          length="16"  type="undefined"/>
+                        <field description="ContractDataLinkedContract"      length="5"   type="undefined"/>
+                        <field description="ContractDataReceiptDelivered"    length="1"   type="undefined"/>
+                        <field description="ContractDataVehicleAllowed"      length="4"   type="undefined"/>
+                    </field>
+                </fileMapping>
+                <fileMapping name="46h">
+                    <field description="PublicTransportContractBitmap"       length="7"   type="bitmap">
+                        <field description="ContractProvider"                length="8"   type="undefined"/>
+                        <field description="ContractType"                    length="16"  type="contractType"/>
+                        <field description="ContractSerialNumber"            length="32"  type="number"/>
+                        <field description="ContractPassengerClass"          length="8"   type="number"/>
+                        <field description="ContractValidityInfo"            length="2"   type="bitmap">
+                            <field description="ContractValidityStartDate"   length="14"  type="date"/>
+                            <field description="ContractValidityEndDate"     length="14"  type="date"/>
+                        </field>
+                        <field description="ContractStatus"                  length="8"   type="contractStatus"/>
+                        <field description="ContractData"                    length="0"   type="undefined"/>
+                    </field>
+                    <field description="ContractDataExtendedMapping"         length="17"  type="bitmap">
+                        <field description="ContractDataOVD1"                length="48"  type="undefined"/>
+                        <field description="ContractDataOD2"                 length="32"  type="undefined"/>
+                        <field description="ContractDataValidityZones"       length="16"  type="undefined"/>
+                        <field description="ContractDataSale"                length="38"  type="undefined"/>
+                        <field description="ContractDataPay"                 length="28"  type="undefined"/>
+                        <field description="ContractDataPassengerTotal"      length="6"   type="number"/>
+                        <field description="ContractDataPeriodicity"         length="22"  type="undefined"/>
+                        <field description="ContractDataSold"                length="13"  type="undefined"/>
+                        <field description="ContractDataVehicleAllowed"      length="4"   type="undefined"/>
+                        <field description="ContractDataLinkedContract"      length="5"   type="undefined"/>
+                        <field description="ContractValidityStartTime"       length="11"  type="time"/>
+                        <field description="ContractValidityEndTime"         length="11"  type="time"/>
+                        <field description="ContractDataEndInhibitionDate"   length="14"  type="date"/>
+                        <field description="ContractDataValidityLimitDate"   length="14"  type="date"/>
+                        <field description="ContractDataGeoLine"             length="28"  type="undefined"/>
+                        <field description="ContractDataValidityJourneys"    length="16"  type="number"/>
+                        <field description="ContractDataSaleSecureDevice"    length="32"  type="number"/>
+                    </field>
+                </fileMapping>
+                <fileMapping name="FFh">
+                    <field description="Contracts bitmap"                    length="20"  type="bitmap">
+                        <field description="ContractNetworkId"               length="24"  type="undefined"/>
+                        <field description="ContractProvider"                length="8"   type="undefined"/>
+                        <field description="ContractTariff"                  length="16"  type="number"/>
+                        <field description="ContractSerialNumber"            length="32"  type="undefined"/>
+                        <field description="ContractCustomerInfo"            length="2"   type="bitmap">
+                            <field description="ContractCustomerProfile"     length="6"   type="undefined"/>
+                            <field description="ContractCustomerNumber"      length="32"  type="undefined"/>
+                        </field>
+                        <field description="ContractPassengerInfo"           length="2"   type="bitmap">
+                            <field description="ContractPassengerClass"      length="6"   type="undefined"/>
+                            <field description="ContractPassengerTotal"      length="8"   type="undefined"/>
+                        </field>
+                        <field description="ContractVehicleClassAllowed"     length="6"   type="undefined"/>
+                        <field description="ContractPaymentPointer(0..5)"    length="32"  type="undefined"/>
+                        <field description="ContractPayMethod"               length="11"  type="payMethod"/>
+                        <field description="ContractServices"                length="16"  type="undefined"/>
+                        <field description="ContractPriceAmount"             length="16"  type="amount"/>
+                        <field description="ContractPriceUnit"               length="16"  type="undefined"/>
+                        <field description="ContractContractRestriction"     length="7"   type="bitmap">
+                            <field description="ContractStartTime"           length="11"  type="time"/>
+                            <field description="ContractEndTime"             length="11"  type="time"/>
+                            <field description="ContractRestrictDay"         length="8"   type="undefined"/>
+                            <field description="ContractRestrictTimeCode"    length="8"   type="undefined"/>
+                            <field description="ContractRestrictCode"        length="8"   type="undefined"/>
+                            <field description="ContractRestrictProduct"     length="16"  type="undefined"/>
+                            <field description="ContractRestrictLocation"    length="16"  type="undefined"/>
+                        </field>
+                        <field description="ContractContractValidityInfo"    length="9"   type="bitmap">
+                            <field description="ContractStartDate"           length="14"  type="date"/>
+                            <field description="ContractStartTime"           length="11"  type="time"/>
+                            <field description="ContractEndDate"             length="14"  type="date"/>
+                            <field description="ContractEndTime"             length="11"  type="time"/>
+                            <field description="ContractDuration"            length="8"   type="undefined"/>
+                            <field description="ContractLimitDate"           length="14"  type="date"/>
+                            <field description="ContractZones"               length="8"   type="zones"/>
+                            <field description="ContractJourneys"            length="16"  type="undefined"/>
+                            <field description="ContractPeriodJourneys"      length="16"  type="undefined"/>
+                        </field>
+                        <field description="ContractContractJourneyData"     length="8"   type="bitmap">
+                            <field description="ContractOrigin"              length="16"  type="undefined"/>
+                            <field description="ContractDestination"         length="16"  type="undefined"/>
+                            <field description="ContractRouteNumbers"        length="16"  type="undefined"/>
+                            <field description="ContractRouteVariants"       length="8"   type="undefined"/>
+                            <field description="ContractRun"                 length="16"  type="undefined"/>
+                            <field description="ContractVia"                 length="16"  type="undefined"/>
+                            <field description="ContractDistance"            length="16"  type="undefined"/>
+                            <field description="ContractInterchange"         length="8"   type="undefined"/>
+                        </field>
+                        <field description="ContractContractSaleDate"        length="4"   type="bitmap">
+                            <field description="ContractSaleDate"            length="14"  type="date"/>
+                            <field description="ContractSaleTime"            length="11"  type="time"/>
+                            <field description="ContractSaleAgent"           length="8"   type="undefined"/>
+                            <field description="ContractSaleDevice"          length="16"  type="undefined"/>
+                        </field>
+                        <field description="ContractStatus"                  length="8"   type="contractStatus"/>
+                        <field description="ContractLoyaltyPoints"           length="16"  type="undefined"/>
+                        <field description="ContractAuthenticator"           length="16"  type="undefined"/>
+                        <field description="Contract"                        length="0"   type="undefined"/>
+                    </field>
+                </fileMapping>
             </file>
-            <!--
-            <file LFI="2020" SDI="09" type="EF" description="Contracts FFh">
-                <field description="Contracts bitmap"                   length="20"  type="bitmap">
-                    <field description="ContractNetworkId"              length="24"  type="undefined"/>
-                    <field description="ContractProvider"               length="8"   type="undefined"/>
-                    <field description="ContractTariff"                 length="16"  type="number"/>
-                    <field description="ContractSerialNumber"           length="32"  type="undefined"/>
-                    <field description="ContractCustomerInfo"           length="2"   type="bitmap">
-                        <field description="ContractCustomerProfile"    length="6"   type="undefined"/>
-                        <field description="ContractCustomerNumber"     length="32"  type="undefined"/>
-                    </field>
-                    <field description="ContractPassengerInfo"          length="2"   type="bitmap">
-                        <field description="ContractPassengerClass"     length="6"   type="undefined"/>
-                        <field description="ContractPassengerTotal"     length="8"   type="undefined"/>
-                    </field>
-                    <field description="ContractVehicleClassAllowed"    length="6"   type="undefined"/>
-                    <field description="ContractPaymentPointer(0..5)"   length="32"  type="undefined"/>
-                    <field description="ContractPayMethod"              length="11"  type="payMethod"/>
-                    <field description="ContractServices"               length="16"  type="undefined"/>
-                    <field description="ContractPriceAmount"            length="16"  type="amount"/>
-                    <field description="ContractPriceUnit"              length="16"  type="undefined"/>
-                    <field description="ContractContractRestriction"    length="7"   type="bitmap">
-                        <field description="ContractStartTime"          length="11"  type="time"/>
-                        <field description="ContractEndTime"            length="11"  type="time"/>
-                        <field description="ContractRestrictDay"        length="8"   type="undefined"/>
-                        <field description="ContractRestrictTimeCode"   length="8"   type="undefined"/>
-                        <field description="ContractRestrictCode"       length="8"   type="undefined"/>
-                        <field description="ContractRestrictProduct"    length="16"  type="undefined"/>
-                        <field description="ContractRestrictLocation"   length="16"  type="undefined"/>
-                    </field>
-                    <field description="ContractContractValidityInfo"   length="9"   type="bitmap">
-                        <field description="ContractStartDate"          length="14"  type="date"/>
-                        <field description="ContractStartTime"          length="11"  type="time"/>
-                        <field description="ContractEndDate"            length="14"  type="date"/>
-                        <field description="ContractEndTime"            length="11"  type="time"/>
-                        <field description="ContractDuration"           length="8"   type="undefined"/>
-                        <field description="ContractLimitDate"          length="14"  type="date"/>
-                        <field description="ContractZones"              length="8"   type="zones"/>
-                        <field description="ContractJourneys"           length="16"  type="undefined"/>
-                        <field description="ContractPeriodJourneys"     length="16"  type="undefined"/>
-                    </field>
-                    <field description="ContractContractJourneyData"    length="8"   type="bitmap">
-                        <field description="ContractOrigin"             length="16"  type="undefined"/>
-                        <field description="ContractDestination"        length="16"  type="undefined"/>
-                        <field description="ContractRouteNumbers"       length="16"  type="undefined"/>
-                        <field description="ContractRouteVariants"      length="8"   type="undefined"/>
-                        <field description="ContractRun"                length="16"  type="undefined"/>
-                        <field description="ContractVia"                length="16"  type="undefined"/>
-                        <field description="ContractDistance"           length="16"  type="undefined"/>
-                        <field description="ContractInterchange"        length="8"   type="undefined"/>
-                    </field>
-                    <field description="ContractContractSaleDate"       length="4"   type="bitmap">
-                        <field description="ContractSaleDate"           length="14"  type="date"/>
-                        <field description="ContractSaleTime"           length="11"  type="time"/>
-                        <field description="ContractSaleAgent"          length="8"   type="undefined"/>
-                        <field description="ContractSaleDevice"         length="16"  type="undefined"/>
-                    </field>
-                    <field description="ContractStatus"                 length="8"   type="contractStatus"/>
-                    <field description="ContractLoyaltyPoints"          length="16"  type="undefined"/>
-                    <field description="ContractAuthenticator"          length="16"  type="undefined"/>
-                    <field description="Contract"                       length="0"   type="undefined"/>
-                </field>
-            </file>-->
         </file>
     </card>
 </calypsoEnvironment>

@@ -17,6 +17,7 @@ import java.util.logging.Logger;
  */
 public class CalypsoEnvironment {
     private HashMap<Integer, String>    fares;
+    private HashMap<Integer, String>    profiles;
     private HashMap<Integer, String>    stops;
     private HashMap<Integer, String>    routes;
     private ArrayList<CalypsoFile>      cardStructure;
@@ -24,6 +25,7 @@ public class CalypsoEnvironment {
     private int networkId;
     //private int regionId;
     private boolean faresConfigured;
+    private boolean profilesConfigured;
     private boolean topologyConfigured;
     private boolean cardStructureConfigured;
 
@@ -49,6 +51,7 @@ public class CalypsoEnvironment {
 
     private void init(){
         this.fares = new HashMap<>();
+        this.profiles = new HashMap<>();
         this.routes = new HashMap<>();
         this.stops = new HashMap<>();
         this.cardStructure = new ArrayList<>();
@@ -61,10 +64,13 @@ public class CalypsoEnvironment {
         // countryCode/networkID/cardstruct.xml
         // countryCode/networkID/topology.xml
         // countryCode/networkID/fares.xml
+        // countryCode/networkID/profiles.xml
         this.countryId = countryCode;
         this.networkId = networkId;
 
         String dir = "networks/"+countryCode+"/"+networkId+"/";
+        System.out.println("Loading network profiles...");
+        this.setNetworkProfiles(dir+"profiles.xml");
         System.out.println("Loading network fares...");
         this.setNetworkFares(dir+"fares.xml");
         System.out.println("Loading network topology...");
@@ -114,9 +120,58 @@ public class CalypsoEnvironment {
     }
 
     /**
+     * Loads the network profiles from an XML file.
+     * @param faresFile Filename of the XML file containing profiles information.
+     * @return Profile information properly loaded.
+     * @throws JDOMParseException
+     */
+    public boolean setNetworkProfiles(String faresFile) throws JDOMParseException {
+        Document doc = openDocument(faresFile);
+        if(doc == null)
+            return false;
+
+        try {
+            this.profilesConfigured = this.parseProfilesTree(doc);
+        } catch (JDOMParseException e) {
+            Logger.getGlobal().severe(e.getMessage());
+        }
+
+        if(this.profilesConfigured)
+            System.out.println("Profiles loaded");
+        else
+            System.out.println("Profiles NOT loaded !");
+
+        return this.profilesConfigured;
+    }
+
+    private boolean parseProfilesTree(Document doc) throws JDOMParseException {
+        Element root = doc.getRootElement();
+        if(!root.getName().equals("calypsoEnvironment")) {
+            throw new JDOMParseException("Root element should be a calypsoEnvironment.", new Throwable("throwable"));
+        }
+
+        if(!this.checkCoherentEnvironment(root)){
+            System.out.println("Incoherent network/country/region IDs.");
+            return false;
+        }
+
+        Element profilesElement = root.getChildren().get(0);
+        if(!profilesElement.getName().equals("profiles")) {
+            throw new JDOMParseException("First first level child element should be profiles.", new Throwable("throwable"));
+        }
+
+        for(Element e : profilesElement.getChildren()) {
+            String name = e.getAttributeValue("name");
+            int id = Integer.parseInt(e.getAttributeValue("id"));
+            this.profiles.put(id, name);
+        }
+        return true;
+    }
+
+    /**
      * Loads the network fares from an XML file.
      * @param faresFile Filename of the XML file containing fares information.
-     * @return Topology information properly loaded.
+     * @return Network fare information properly loaded.
      * @throws JDOMParseException
      */
     public boolean setNetworkFares(String faresFile) throws JDOMParseException {
@@ -329,12 +384,16 @@ public class CalypsoEnvironment {
         return topologyConfigured;
     }
 
-    public boolean isCardStructureConfigured() {
-        return cardStructureConfigured;
-    }
-
     public boolean areFaresConfigured() {
         return faresConfigured;
+    }
+
+    public boolean areProfilesConfigured(){
+        return this.profilesConfigured;
+    }
+
+    public String getProfileName(int profileId){
+        return this.profiles.get(profileId);
     }
 
     public int getContractIndex(int contractPointer){

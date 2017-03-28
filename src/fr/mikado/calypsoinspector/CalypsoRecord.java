@@ -13,6 +13,7 @@ public class CalypsoRecord {
     BitArray bits;
     CalypsoFile parent;
     int id; // record ID (index in file.getRecords())
+    String mappingName;
     ArrayList<CalypsoRecordField> fields;
     HashMap<String, CalypsoRecordField> fieldsByName;
 
@@ -44,6 +45,8 @@ public class CalypsoRecord {
 
     public void print(int n){
         System.out.println(CalypsoFile.nesting(n) + "Raw contents : " + this.getBitsAsHex());
+        if(this.mappingName != null)
+            System.out.println(CalypsoFile.nesting(n) + "Mapping name : " + this.getMappingName());
         for(CalypsoRecordField f : this.fields)
             f.print(n+1);
     }
@@ -72,5 +75,12 @@ public class CalypsoRecord {
         return this.id;
     }
 
+    public void setMappingName(String mappingName){
+        this.mappingName = mappingName;
+    }
+
+    public String getMappingName(){
+        return this.mappingName;
+    }
 }
 

@@ -4,6 +4,7 @@ import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import static fr.mikado.calypsoinspector.CalypsoFile.CalypsoFileType.EF;
@@ -196,6 +197,7 @@ public class CalypsoCard {
                 String route = event.getSubfield("EventRouteNumber").getConvertedValue();
                 String direction = event.getSubfield("EventData").getSubfield("EventDataRouteDirection").getConvertedValue();
 
+                // TODO : THIS IS BUGGED. Apparently, some contracts are stored in 2020 and some in 2030. Ugh...
                 String fare = "<Contracts not loaded>";
                 if(contracts != null) {
                     // which contract for this event ?
@@ -203,6 +205,8 @@ public class CalypsoCard {
                     int farePointer = event.getSubfield("EventContractPointer").getBits().getInt();
                     int contractIndex = this.env.getContractIndex(farePointer);
                     if (contractIndex >= 0) {
+                        //System.out.println("Contract index : " + contractIndex);
+                        //System.out.println("Fare pointer   : " + farePointer);
                         CalypsoRecord contract = contracts.getRecords().get(contractIndex);
                         CalypsoRecordField contractBitmap = contract.getRecordField("PublicTransportContractBitmap");
                         CalypsoRecordField contractType = contractBitmap.getSubfield("ContractType");
@@ -218,6 +222,19 @@ public class CalypsoCard {
                 System.out.println(" Contrat : " + fare +"\n");
             }
         }
+    }
+
+    public void dumpProfiles(){
+        CalypsoFile envHolder= this.env.getFile("Environment, Holder");
+        CalypsoRecord envHolderRec = envHolder.getRecords().get(0);
+        CalypsoRecordField holderProfiles = envHolderRec.getRecordField("Holder Bitmap").getSubfield("Holder Profiles(0..4)");
+
+        for(CalypsoRecordField f : holderProfiles.getSubfields()) {
+            System.out.println("Profile :");
+            System.out.println(" Label :      " + f.getSubfield("Profile Number").getConvertedValue());
+            System.out.println(" End date :   " + f.getSubfield("Profile Date").getConvertedValue());
+        }
+        System.out.print("\n");
     }
 
     public CalypsoEnvironment getEnvironment(){
