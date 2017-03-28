@@ -66,25 +66,34 @@ public class CalypsoCard {
     }
 
     /**
-     * Reads a record in the selected file.
+     * Reads a record in a file selected by its SFI
+     * @param SFI Short File Identifier
      * @param recordId Id of the record
-     * @return Reponse APDU from the READ RECORD (94 B2) command.
+     * @return Response APDU from the READ RECORD (94 B2) command.
      * @throws CardException
      */
-    private ResponseAPDU readRecord(int recordId) throws CardException {
-        return this.card.getBasicChannel().transmit(new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xB2, (byte) recordId, 0x04, 0x1D}));
+    private ResponseAPDU readRecordSFI(int SFI, int recordId) throws CardException {
+        return this.card.getBasicChannel().transmit(new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xB2, (byte) recordId, (byte)(0x04 + (SFI<<3)), 0x00}));
+    }
+
+    /**
+     * Reads a record in a file previsouly selected by its LFI
+     * @param recordId Id of the record
+     * @return Response APDU from the READ RECORD (94 B2) command.
+     * @throws CardException
+     */
+    private ResponseAPDU readRecordLFI(int recordId) throws CardException {
+        return this.card.getBasicChannel().transmit(new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xB2, (byte) recordId, 0x04, 0x00}));
     }
 
     private boolean selectFile(CalypsoFile f){
-        int id = Integer.parseInt(f.getIdentifier(), 16);
-        return selectFileFromLFI(id);
+        return selectFileFromLFI(f.getLFI());
     }
 
     /**
      * Selects a file on the card using LFI.
      * @param LFI Long File Identifier
      * @return Reponse APDU from the SELECT FILE (94 A4) command.
-     * @throws CardException
      */
     private boolean selectFileFromLFI(int LFI){
         CommandAPDU c = new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xA4, 0x00, 0x00, 0x02, (byte) ((LFI>>8)&0xff), (byte) (LFI&0xff), 0x00});
@@ -106,16 +115,20 @@ public class CalypsoCard {
      * @param f CalypsoFile
      */
     public void readFile(CalypsoFile f){
-        if(!this.selectFile(f)){
-            Logger.getGlobal().warning("Could not select file "+f.getIdentifier()+" ! Skipping...");
-            return;
-        }
+        if(!f.isSFIAddressable())
+            if(!this.selectFile(f)){
+                Logger.getGlobal().warning("Could not select file "+f.getIdentifier()+" ! Skipping...");
+                return;
+            }
 
         ResponseAPDU responseAPDU;
         if(f.getType() == EF) {
             for (int i = 1; ; i++) {
                 try {
-                    responseAPDU = this.readRecord(i);
+                    if(f.isSFIAddressable())
+                        responseAPDU = this.readRecordSFI(f.getSFI(), i);
+                    else
+                        responseAPDU = this.readRecordLFI(i);
                     if (responseAPDU.getSW() == 0x6A83)
                         break;
                 } catch (CardException e) {
@@ -170,26 +183,39 @@ public class CalypsoCard {
      * Prints out the contents of the event log of the card. (last trips)
      */
     public void dumpTrips() {
-        CalypsoFile events = null;
-        for(CalypsoFile f : this.env.getFiles())
-            for (CalypsoFile ff : f.getChildren())
-                if (ff.getDescription().equals("Events")) {
-                    events = ff;
-                    break;
-                }
+        CalypsoFile events = env.getFile("Events");
+        CalypsoFile contracts = env.getFile("Contracts");
+
         if (events != null) {
             for(CalypsoRecord rec : events.getRecords()){
+                // basic event details
                 String date = rec.getRecordField("Event Date").getConvertedValue();
                 String time = rec.getRecordField("Event Time").getConvertedValue();
                 CalypsoRecordField event = rec.getRecordField("Event");
                 String stop = event.getSubfield("EventLocationId").getConvertedValue();
                 String route = event.getSubfield("EventRouteNumber").getConvertedValue();
                 String direction = event.getSubfield("EventData").getSubfield("EventDataRouteDirection").getConvertedValue();
+
+                String fare = "<Contracts not loaded>";
+                if(contracts != null) {
+                    // which contract for this event ?
+                    fare = "Error while decoding contract pointer. - Dog, probably.";
+                    int farePointer = event.getSubfield("EventContractPointer").getBits().getInt();
+                    int contractIndex = this.env.getContractIndex(farePointer);
+                    if (contractIndex >= 0) {
+                        CalypsoRecord contract = contracts.getRecords().get(contractIndex);
+                        CalypsoRecordField contractBitmap = contract.getRecordField("PublicTransportContractBitmap");
+                        CalypsoRecordField contractType = contractBitmap.getSubfield("ContractType");
+                        fare = contractType.getConvertedValue();
+                    }
+                }
+
                 System.out.println("Event :");
-                System.out.println(" Date : "  + date + " " + time);
-                System.out.println(" Arrêt : " + stop);
-                System.out.println(" Ligne : " + route);
-                System.out.println(" Sens : "  + direction +"\n");
+                System.out.println(" Date    : " + date + " " + time);
+                System.out.println(" Arrêt   : " + stop);
+                System.out.println(" Ligne   : " + route);
+                System.out.println(" Sens    : " + direction);
+                System.out.println(" Contrat : " + fare +"\n");
             }
         }
     }

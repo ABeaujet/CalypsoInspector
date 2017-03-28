@@ -9,12 +9,18 @@ This project should be ported to Android and support external OTG readers (ACR12
 This project is tested with the cards used in Lille, France (PassPass or Pass Pass cards). It should also work with Navigo cards, though some changes are necessary due to the complex topology of Paris public transport network (zones, check-outs...).
 I will make this project compatible with Navigo cards once I get a new one, but that shouldn't be that hard.
 
+NONE OF THE INFORMATION IN THIS REPO SHOULD BE TAKEN AS FACE VALUE. Just in case.
+
 ## Currently available data :
 
 - Holder information
-- Latest check-ins (date, time, route, stop, direction)
-- Holder profiles (very soon)
-- Contracts (maybe soon)
+- Latest check-ins (date, time, route, stop, direction, contract)
+
+## TODO :
+
+- File Mappings : some files (like contrats) may have several different layouts depending on other fields.
+- Holder profiles
+- Contract list
 
 ## How to use:
 

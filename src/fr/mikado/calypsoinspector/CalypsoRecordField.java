@@ -6,6 +6,7 @@ import org.jdom2.Element;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -18,8 +19,8 @@ import static fr.mikado.calypsoinspector.CalypsoRecordField.FieldType.*;
 public class CalypsoRecordField {
 
     enum FieldType {
-        Bitmap, Pointer, Date, Time, DateTime, Amount, Number, NetworkId, BcdDate, String, Repeat, Route, Stop, Vehicle, Direction, PayMethod, YesNo, Undefined;
-        public static String[] n = {"Bitmap", "Pointer", "Date", "Time", "DateTime", "Amount", "Number", "NetworkId", "BcdDate", "String", "Repeat", "Route", "Stop", "Vehicle", "Direction", "PayMethod", "YesNo", "Undefined"};
+        Bitmap, Pointer, Date, Time, DateTime, Amount, Number, NetworkId, BcdDate, String, Repeat, Route, Stop, Vehicle, Direction, PayMethod, YesNo, Name, Gender, ContractStatus, ContractType, ContractTariff, ContractPointer, Undefined;
+        public static String[] n = {"Bitmap", "Pointer", "Date", "Time", "DateTime", "Amount", "Number", "NetworkId", "BcdDate", "String", "Repeat", "Route", "Stop", "Vehicle", "Direction", "PayMethod", "YesNo", "Name", "Gender", "ContractStatus", "ContractType", "ContractTariff", "ContractPointer", "Undefined"};
         public static int c= 0;
         private int cc= 0;
         FieldType(){ this.cc = FieldType.getC(); }
@@ -44,7 +45,6 @@ public class CalypsoRecordField {
     }
 
     private static HashMap<Integer, String> countryCodes;
-
     static{
         countryCodes = new HashMap<>();
         Document cc = CalypsoEnvironment.openDocument("CountryCodes.xml");
@@ -56,6 +56,35 @@ public class CalypsoRecordField {
                     countryCodes.put(Integer.parseInt(e.getAttributeValue("id")), e.getAttributeValue("name"));
             }
         }
+    }
+
+    private static HashMap<Integer, String> contractStatuses;
+    static{
+        contractStatuses = new HashMap<>();
+        contractStatuses.put(0,"Never validated");
+        contractStatuses.put(1,"Used once");
+        contractStatuses.put(2,"Validated");
+        contractStatuses.put(3,"Renewment notification sent");
+        contractStatuses.put(4,"Punched");
+        contractStatuses.put(5,"Cancelled");
+        contractStatuses.put(6,"Interrupted");
+        contractStatuses.put(7,"Status OK");
+        contractStatuses.put(13,"Not available for validation");
+        contractStatuses.put(14,"Free entry");
+        contractStatuses.put(15,"Active");
+        contractStatuses.put(16,"Pre-allocated");
+        contractStatuses.put(17,"Completed and to be removed");
+        contractStatuses.put(18,"Completed and cannot be removed");
+        contractStatuses.put(19,"Blocked");
+        contractStatuses.put(20,"Data group encrypted flag");
+        contractStatuses.put(21,"Data group anonymous flag");
+        contractStatuses.put(33,"Pending");
+        contractStatuses.put(63,"Suspended");
+        contractStatuses.put(88,"Disabled");
+        contractStatuses.put(125,"Suspended contract");
+        contractStatuses.put(126,"Invalid");
+        contractStatuses.put(127,"Invalid et reimbursed");
+        contractStatuses.put(255,"Deletable");
     }
 
     private CalypsoEnvironment env;
@@ -137,6 +166,18 @@ public class CalypsoRecordField {
                 return Direction;
             case "yesno":
                 return YesNo;
+            case "name":
+                return Name;
+            case "gender":
+                return Gender;
+            case "contractstatus":
+                return ContractStatus;
+            case "contracttype":
+                return ContractType;
+            case "contracttariff":
+                return ContractTariff;
+            case "contractpointer":
+                return ContractPointer;
             default:
                 return Undefined;
         }
@@ -194,7 +235,7 @@ public class CalypsoRecordField {
                 this.convertedValue = new String(this.bits.getChars());
                 break;
             case Date:
-                int timestamp = 852073200 + this.bits.getInt() * 24 * 3600;
+                int timestamp = 852073200 + this.bits.getInt() * 24 * 3600; // or maybe 852091200 ?
                 java.util.Date date = new Date((long) timestamp * 1000);
                 this.convertedValue = new SimpleDateFormat("dd/MM/yyyy").format(date);
                 break;
@@ -261,6 +302,74 @@ public class CalypsoRecordField {
             case YesNo:
                 this.convertedValue = this.bits.getInt() == 0 ? "Yes":"No";
                 break;
+            case Name:
+                StringBuilder nameSB = new StringBuilder();
+                for(int i = 0;i<bits.getSize();i+=5){
+                    int car = bits.get(i, 5).getInt();
+                    switch(car){
+                        case 0x1B:
+                            nameSB.append(' ');
+                            break;
+                        case 0x1C:
+                            nameSB.append('´');
+                            break;
+                        case 0x1D:
+                            nameSB.append('`');
+                            break;
+                        case 0x1E:
+                            nameSB.append('^');
+                            break;
+                        case 0x1F:
+                            nameSB.append('\'');
+                            break;
+                        case 0x00:
+                            nameSB.append('-');
+                            break;
+                        default:
+                            nameSB.append('A' + car);
+                            break;
+                    }
+                    this.convertedValue = nameSB.toString();
+                }
+                this.convertedValue = this.bits.getInt() == 0 ? "Yes":"No";
+                break;
+            case Gender:
+                switch(bits.getInt()){
+                    case 1:
+                        this.convertedValue = "M.";
+                        break;
+                    case 2:
+                        this.convertedValue = "Mme.";
+                        break;
+                    case 3:
+                        this.convertedValue = "Réservé";
+                        break;
+                    default:
+                        this.convertedValue = "Inconnu";
+                }
+                break;
+            case ContractStatus:
+                this.convertedValue = contractStatuses.get(bits.getInt());
+                break;
+            case ContractType:
+                this.convertedValue = null;
+                if(env.areFaresConfigured())
+                    this.convertedValue = this.env.getFareName(bits.getInt());
+                if(this.convertedValue == null)
+                    this.convertedValue = bits.toHex();
+                break;
+            case ContractTariff:
+                int exploitant = bits.get( 0, 4).getInt();
+                int type       = bits.get( 4, 8).getInt();
+                int priorite   = bits.get(12, 4).getInt();
+                this.convertedValue = "exploitant=" + exploitant + ", type=" + type + ", priorite=" + priorite;
+                break;
+            case ContractPointer:
+                int pointer = bits.getInt();
+                this.env.contractPointers.add(pointer);
+                Collections.sort(this.env.contractPointers);
+                this.convertedValue = ""+Integer.toHexString(pointer);
+                break;
             default:  // et donc Undefined
                 this.convertedValue = this.bits.toHex();
                 break;
@@ -304,6 +413,8 @@ public class CalypsoRecordField {
     }
     public void setParentRecord(CalypsoRecord r){
         this.parentRecord = r;
+        for(CalypsoRecordField sub : this.subfields)
+            sub.setParentRecord(r);
     }
     public java.lang.String getDescription() {
         return description;

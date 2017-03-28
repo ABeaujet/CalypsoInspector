@@ -20,7 +20,8 @@ public class CalypsoFile {
         MF, DF, EF
     }
 
-    private String identifier;
+    private Integer LFI;
+    private Integer SFI;
     private String description;
     private CalypsoFile parent;
     private ArrayList<CalypsoFile> children;
@@ -37,7 +38,14 @@ public class CalypsoFile {
     public CalypsoFile(Element e, @Nullable CalypsoEnvironment env){
         this.children = new ArrayList<>();
         this.records = new ArrayList<>();
-        this.identifier = e.getAttributeValue("identifier");
+
+        String LFIStr = e.getAttributeValue("LFI");
+        if(LFIStr != null)
+            this.LFI = Integer.parseInt(LFIStr, 16);
+        String SFIStr = e.getAttributeValue("SFI");
+        if(SFIStr != null)
+            this.SFI = Integer.parseInt(SFIStr, 16);
+
         this.description = e.getAttributeValue("description");
         this.type = (e.getAttributeValue("type").equals("DF") ? CalypsoFileType.DF : CalypsoFileType.EF);
 
@@ -50,8 +58,8 @@ public class CalypsoFile {
 
     public String getFullPath(){
         if(this.parent != null)
-            return this.parent.getFullPath() + "/" + this.identifier;
-        return this.identifier;
+            return this.parent.getFullPath() + "/" + this.getIdentifier();
+        return this.getIdentifier();
     }
 
     public void addChild(CalypsoFile cf){
@@ -103,7 +111,20 @@ public class CalypsoFile {
     }
 
     public String getIdentifier(){
-        return this.identifier;
+        if(this.LFI != null)
+            return Integer.toHexString(this.LFI);
+        if(this.SFI != null)
+        return Integer.toHexString(this.SFI);
+        return "NO_ID";
+    }
+    public boolean isSFIAddressable(){
+        return this.SFI != null;
+    }
+    public Integer getSFI(){
+        return this.SFI;
+    }
+    public Integer getLFI(){
+        return this.LFI;
     }
     public CalypsoFileType getType(){
         return this.type;

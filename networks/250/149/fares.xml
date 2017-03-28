@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<calypsoEnvironment country="France" countryId="250" operator="Transpole/SNCF" networkId="149" currency="euro">
+    <fares>
+        <fare id="2253" description="Pass Fideli'TER+annuel 75KM max" />
+        <fare id="2254" description="Pass Fideli'TER+ annuel 75KM min" />
+        <fare id="16919" description="Pass Fidéli'TER GV+ annuel" />
+        <fare id="16929" description="Pass Fidéli'TER GV+ hebdomadaire" />
+        <fare id="16933" description="Pass Fideli'TER+ hebdomadaire" />
+        <fare id="16939" description="Pass Fidéli'TER GV+ mensuel" />
+        <fare id="16943" description="Pass Fideli'TER+ mensuel" />
+        <fare id="24577" description="Trajet unitaire" />
+        <fare id="24578" description="Trajet unitaire x10" />
+        <fare id="24705" description="Tout Public Permanent" />
+        <fare id="24706" description="4 A 25 ANS Permanent" />
+        <fare id="24707" description="Tout Public PDE R50" />
+        <fare id="24708" description="Tout Public PDE R100" />
+        <fare id="24709" description="65 ANS et Plus Permanent" />
+        <fare id="25101" description="Pass Braderie + TER" />
+        <fare id="25730" description="Semaine Rythmo" />
+        <fare id="25731" description="Mensuel Rythmo" />
+        <fare id="25732" description="Pass Zonal Tout public annuel" />
+        <fare id="25737" description="Semaine Viva" />
+        <fare id="25738" description="4 A 25 ANS Mensuel" />
+        <fare id="25739" description="Pass Zonal Jeune annuel" />
+        <fare id="25741" description="Pass Et‚ Viva" />
+        <fare id="25742" description="Maxi Viva 7 mois" />
+        <fare id="25743" description="4 A 25 ANS 10 Mois" />
+        <fare id="25745" description="Maxi Viva XS Boursier 7 mois" />
+        <fare id="25746" description="Maxi Viva XS Boursier 10 mois" />
+        <fare id="25747" description="Semaine Viva XS boursier" />
+        <fare id="25748" description="Mensuel Viva XS boursier" />
+        <fare id="25768" description="Semaine Viva XS Lycéen" />
+        <fare id="25769" description="Mensuel Viva XS Lycéen" />
+        <fare id="25770" description="Mensuel Viva XXS" />
+        <fare id="25772" description="Maxi Viva XS Lycéen 7 mois" />
+        <fare id="25773" description="Maxi Viva XS Lycéen 10 mois" />
+        <fare id="25779" description="4 A 25 ANS 10 Mois QF1" />
+        <fare id="25780" description="4 A 25 ANS 10 Mois QF2" />
+        <fare id="25781" description="4 A 25 ANS 10 Mois QF3" />
+        <fare id="25788" description="Tout Public Mensuel" />
+        <fare id="25789" description="26 A 64 ANS Mensuel QF1" />
+        <fare id="25790" description="26 A 64 ANS Mensuel QF2" />
+        <fare id="25791" description="26 A 64 ANS Mensuel QF3" />
+        <fare id="25792" description="26 A 64 ANS Annuel QF3" />
+        <fare id="25793" description="26 A 64 ANS Annuel QF2" />
+        <fare id="25794" description="26 A 64 ANS Annuel QF1" />
+        <fare id="25799" description="4 A 25 ANS Mensuel QF1" />
+        <fare id="25800" description="4 A 25 ANS Mensuel QF2" />
+        <fare id="25801" description="4 A 25 ANS Mensuel QF3" />
+        <fare id="25809" description="4 A 25 ANS Annuel QF1" />
+        <fare id="25810" description="4 A 25 ANS Annuel QF2" />
+        <fare id="25811" description="4 A 25 ANS Annuel QF3" />
+        <fare id="25818" description="65 ANS et Plus Mensuel" />
+        <fare id="25819" description="65 ANS et Plus Mensuel QF1" />
+        <fare id="25820" description="65 ANS et Plus Mensuel QF2" />
+        <fare id="25821" description="65 ANS et Plus Mensuel QF3" />
+        <fare id="25822" description="65 ANS et Plus Mensuel QF0" />
+        <fare id="25824" description="65 ANS et Plus Annuel QF3" />
+        <fare id="25825" description="65 ANS et Plus Annuel QF2" />
+        <fare id="25826" description="65 ANS et Plus Annuel QF1" />
+        <fare id="50101" description="Semaine Intégré" />
+        <fare id="50102" description="Mensuel Intégré" />
+        <fare id="50201" description="Trajet Intégré" />
+        <fare id="50211" description="Stagiaire trajet Intégré" />
+        <fare id="50301" description="Scolaire externe Intégré" />
+        <fare id="50311" description="Scolaire interne Intégré" />
+        <fare id="51103" description="Semaine Adagio" />
+        <fare id="51112" description="Libre circulation Iris CUI" />
+        <fare id="51114" description="Mensuel Adagio" />
+        <fare id="51121" description="Libre circulation Iris fin de droit" />
+        <fare id="51122" description="Libre Circulation Iris Indemnisé" />
+        <fare id="51123" description="Libre circulation Iris Primo demandeur" />
+        <fare id="51124" description="Libre circulation Iris Stagiaire" />
+        <fare id="51125" description="Coquelicot Mensuel" />
+        <fare id="51131" description="Iris Indemnise Mensuel" />
+        <fare id="51132" description="Iris  Fin de droits Mensuel" />
+        <fare id="51133" description="Iris Stagiaire Mensuel" />
+        <fare id="51134" description="Iris CUI Mensuel" />
+        <fare id="51135" description="Iris Primo Mensuel" />
+        <fare id="51201" description="Pass Eté Adagio" />
+        <fare id="51301" description="Libre circulation Coquelicot" />
+        <fare id="51302" description="Coquelicot permanent" />
+        <fare id="51311" description="Maxi Adagio Sup a 300" />
+        <fare id="51312" description="Maxi Adagio Duo" />
+        <fare id="51313" description="Maxi Adagio Inf a 300" />
+        <fare id="51314" description="Libre circulation Adagio" />
+        <fare id="51321" description="Libre circulation MI" />
+        <fare id="51331" description="Maxi Rythmo PDE" />
+        <fare id="51341" description="Libre circulation LOSC" />
+        <fare id="51351" description="Carte Entreprise" />
+        <fare id="51401" description="Pass Grand Stade" />
+        <fare id="51402" description="Pass soirée" />
+        <fare id="51403" description="Pass'Journée Découverte" />
+        <fare id="51409" description="Pass Journée Lille 3000" />
+        <fare id="51411" description="Pass 1 Jour" />
+        <fare id="51412" description="Pass 2 Jours" />
+        <fare id="51413" description="Pass 3 Jours" />
+        <fare id="51414" description="Trajet Visite adulte" />
+        <fare id="51415" description="Trajet Visite enfant" />
+        <fare id="51416" description="Pass 4 Jours" />
+        <fare id="51417" description="Pass 5 Jours" />
+        <fare id="51418" description="Pass 6 Jours" />
+        <fare id="51419" description="Pass 7 Jours" />
+        <fare id="51421" description="Pass Braderie" />
+        <fare id="51422" description="Pass Congrès" />
+        <fare id="51431" description="Pass Famille" />
+        <fare id="51441" description="Scolaire externe urbain" />
+        <fare id="51442" description="Scolaire interne urbain" />
+        <fare id="51511" description="Trajet 4 A 25 ANS x10" />
+        <fare id="51512" description="Trajet 65 ANS et Plus x10" />
+        <fare id="51521" description="Trajet RSA x10" />
+        <fare id="51531" description="Trajet Handipole" />
+        <fare id="51532" description="Stagiaire trajet urbain" />
+        <fare id="51533" description="Trajet Handipole TR" />
+        <fare id="51541" description="Trajet MWR avec corresp" />
+        <fare id="51542" description="Trajet MWR avec corresp x10" />
+        <fare id="51551" description="Trajet groupe 10 personnes" />
+        <fare id="51561" description="Trajet ZAP" />
+        <fare id="51611" description="Formule Liberté" />
+        <fare id="52001" description="Libre circulation Employé Transpole" />
+        <fare id="52002" description="Libre circulation Ayant droit Transpole" />
+        <fare id="52003" description="Libre circulation retraité Transpole" />
+        <fare id="52004" description="Libre circulation CDD Transpole" />
+        <fare id="52005" description="Acces Parking Champ de Mars MD" />
+        <fare id="52101" description="Libre circulation Entreprise Extérieure" />
+        <fare id="52102" description="Libre circulation Agent Prévention" />
+        <fare id="52103" description="Libre Circulation Administrati" />
+        <fare id="52104" description="Libre circulation police Municipale" />
+        <fare id="52201" description="Accès garage à vélos" />
+        <fare id="52211" description="PV contre ABONNEMENT" />
+        <fare id="52301" description="Trajet MWR sans corresp" />
+        <fare id="52302" description="Trajet MWR sans corresp x10" />
+        <fare id="52401" description="Semaine MWR sans corresp" />
+        <fare id="52501" description="Accès Centre Ville" />
+        <fare id="60001" description="VLD Classique - 1 mois" />
+        <fare id="60002" description="VLD Classique - 1 mois + Maxi" />
+        <fare id="60011" description="VLD Classique - 9 mois" />
+        <fare id="60012" description="VLD Classique - 9 mois + Maxi" />
+        <fare id="60021" description="VLD Classique - 12 mois" />
+        <fare id="60022" description="VLD Classique - 12 mois + Maxi" />
+        <fare id="60031" description="VLD Classique - 12 mois + sala" />
+        <fare id="60041" description="VLD Pliant - 1 mois" />
+        <fare id="60042" description="VLD Pliant - 1 mois + Maxi" />
+        <fare id="60051" description="VLD Pliant - 9 mois" />
+        <fare id="60052" description="VLD Pliant - 9 mois + Maxi" />
+        <fare id="60061" description="VLD Pliant - 12 mois" />
+        <fare id="60062" description="VLD Pliant - 12 mois + Maxi" />
+        <fare id="60071" description="VLD VAE - 1 mois" />
+        <fare id="60072" description="VLD VAE - 1 mois + Maxi" />
+        <fare id="60081" description="VLD VAE - 9 mois" />
+        <fare id="60082" description="VLD VAE - 9 mois + Maxi" />
+        <fare id="60091" description="VLD VAE - 12 mois" />
+        <fare id="60092" description="VLD VAE - 12 mois + Maxi" />
+        <fare id="60101" description="VLS crédit temps" />
+        <fare id="60102" description="VLS Abonné vélo seul 1 an" />
+        <fare id="60103" description="VLS Abonn‚ Maxi 1 an" />
+        <fare id="60104" description="VLS Encaissement caution" />
+        <fare id="60111" description="VLD option sacoches - 1 mois" />
+        <fare id="60112" description="VLD dégradation" />
+        <fare id="60113" description="VLD livraison" />
+        <fare id="60114" description="VLD garantie + - 1 mois" />
+        <fare id="60117" description="VLD Option siège enfant - 1 mo" />
+        <fare id="60119" description="VLD Option siège enfant - 12 m" />
+        <fare id="60201" description="VLD Classique Encaissement cau" />
+        <fare id="60202" description="VLD Classique Encais Caution g" />
+        <fare id="60211" description="VLD Pliant Encaissement cautio" />
+        <fare id="60212" description="VLD Pliant Encais Caution gara" />
+        <fare id="60221" description="VLD VAE Encaissement caution" />
+        <fare id="60222" description="VLD VAE Encais Caution garanti" />
+        <fare id="60301" description="Frais dossier scolaire" />
+        <fare id="60401" description="Carte non perso" />
+        <fare id="60402" description="Carte cadeau VLS" />
+        <fare id="60403" description="Frais Impayé" />
+    </fares>
+</calypsoEnvironment>

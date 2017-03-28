@@ -16,14 +16,19 @@ import java.util.logging.Logger;
  * This class contains all the complementary information about the network and the structure of the card.
  */
 public class CalypsoEnvironment {
+    private HashMap<Integer, String>    fares;
     private HashMap<Integer, String>    stops;
     private HashMap<Integer, String>    routes;
     private ArrayList<CalypsoFile>      cardStructure;
     private int countryId;
     private int networkId;
     //private int regionId;
+    private boolean faresConfigured;
     private boolean topologyConfigured;
     private boolean cardStructureConfigured;
+
+    // dirty and messy
+    public ArrayList<Integer> contractPointers;
 
     /**
      * Creates an empty CalypsoEnvironment
@@ -43,23 +48,28 @@ public class CalypsoEnvironment {
     }
 
     private void init(){
+        this.fares = new HashMap<>();
         this.routes = new HashMap<>();
         this.stops = new HashMap<>();
         this.cardStructure = new ArrayList<>();
         this.topologyConfigured = false;
         this.cardStructureConfigured = false;
+        this.contractPointers = new ArrayList<>();
     }
 
     public void loadEnvironment(int countryCode, int networkId) throws JDOMParseException {
         // countryCode/networkID/cardstruct.xml
         // countryCode/networkID/topology.xml
+        // countryCode/networkID/fares.xml
         this.countryId = countryCode;
         this.networkId = networkId;
 
         String dir = "networks/"+countryCode+"/"+networkId+"/";
+        System.out.println("Loading network fares...");
+        this.setNetworkFares(dir+"fares.xml");
         System.out.println("Loading network topology...");
         this.setNetworkTopology(dir+"topology.xml");
-        System.out.println("Loading card strcutre...");
+        System.out.println("Loading card strucutre...");
         this.setCardStructure(dir+"cardstruct.xml");
     }
 
@@ -101,6 +111,55 @@ public class CalypsoEnvironment {
             return null;
         }
         return doc;
+    }
+
+    /**
+     * Loads the network fares from an XML file.
+     * @param faresFile Filename of the XML file containing fares information.
+     * @return Topology information properly loaded.
+     * @throws JDOMParseException
+     */
+    public boolean setNetworkFares(String faresFile) throws JDOMParseException {
+        Document doc = openDocument(faresFile);
+        if(doc == null)
+            return false;
+
+        try {
+            this.faresConfigured = this.parseFaresTree(doc);
+        } catch (JDOMParseException e) {
+            Logger.getGlobal().severe(e.getMessage());
+        }
+
+        if(this.faresConfigured)
+            System.out.println("Fares loaded");
+        else
+            System.out.println("Fares NOT loaded !");
+
+        return this.faresConfigured;
+    }
+
+    private boolean parseFaresTree(Document doc) throws JDOMParseException {
+        Element root = doc.getRootElement();
+        if(!root.getName().equals("calypsoEnvironment")) {
+            throw new JDOMParseException("Root element should be a calypsoEnvironment.", new Throwable("throwable"));
+        }
+
+        if(!this.checkCoherentEnvironment(root)){
+            System.out.println("Incoherent network/country/region IDs.");
+            return false;
+        }
+
+        Element faresElement = root.getChildren().get(0);
+        if(!faresElement.getName().equals("fares")) {
+            throw new JDOMParseException("First first level child element should be fares.", new Throwable("throwable"));
+        }
+
+        for(Element e : faresElement.getChildren()) {
+            String name = e.getAttributeValue("description");
+            int id = Integer.parseInt(e.getAttributeValue("id"));
+            this.fares.put(id, name);
+        }
+        return true;
     }
 
     /**
@@ -189,28 +248,25 @@ public class CalypsoEnvironment {
 
     // on vérifie que le fichier de topo correspond au fichier de carte.
     private boolean checkCoherentEnvironment(Element envElement) {
-        int networkId = Integer.parseInt(envElement.getAttributeValue("networkId"));
-        int countryId = Integer.parseInt(envElement.getAttributeValue("countryId"));
-        //int regionId  = Integer.parseInt(envElement.getAttributeValue("regionId"));
+        String networkIdStr = envElement.getAttributeValue("networkId");
+        if(networkIdStr != null) {
+            int networkId = Integer.parseInt(networkIdStr);
+            if (this.networkId != 0 && this.networkId != networkId)
+                return false;
+            else
+                this.networkId = networkId;
+        }
 
-        boolean coherent = true;
-        if(this.networkId != 0 && this.networkId != networkId)
-            coherent =  false;
-        else
-            this.networkId = networkId;
+        String countryIdStr = envElement.getAttributeValue("countryId");
+        if(countryIdStr != null) {
+            int countryId = Integer.parseInt(envElement.getAttributeValue("countryId"));
+            if (this.countryId != 0 && this.countryId != countryId)
+                return false;
+            else
+                this.countryId = countryId;
+        }
 
-        if(this.countryId != 0 && this.countryId != countryId)
-            coherent = false;
-        else
-            this.countryId = countryId;
-/*
-        if(this.regionId != 0 && this.regionId != regionId)
-            coherent = false;
-        else
-            this.regionId = regionId;
-*/
-        return coherent;
-
+        return true;
     }
 
     private boolean parseStructureTree(Document doc) throws JDOMParseException {
@@ -265,11 +321,37 @@ public class CalypsoEnvironment {
         return (this.stops.containsKey(stopId)) ? this.stops.get(stopId) : null;
     }
 
+    public String getFareName(int fareId){
+        return this.fares.get(fareId);
+    }
+
     public boolean isTopologyConfigured() {
         return topologyConfigured;
     }
 
     public boolean isCardStructureConfigured() {
         return cardStructureConfigured;
+    }
+
+    public boolean areFaresConfigured() {
+        return faresConfigured;
+    }
+
+    public int getContractIndex(int contractPointer){
+        for(int i = 0;i<this.contractPointers.size();i++)
+            if(this.contractPointers.get(i) == contractPointer)
+                return i;
+        return -1;
+    }
+
+    public CalypsoFile getFile(String description){
+        for(CalypsoFile f : this.getFiles()) {
+            if (f.getDescription().equals(description))
+                return f;
+            for (CalypsoFile ff : f.getChildren())
+                if (ff.getDescription().equals(description))
+                    return ff;
+        }
+        return null;
     }
 }
