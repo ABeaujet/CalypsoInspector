@@ -9,14 +9,14 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        CalypsoEnvironment env = new CalypsoEnvironment();
-        env.setCardStructure("CalypsoLille.xml");
-        env.setNetworkTopology("TopoLille.xml");
+        CalypsoEnvironment env = new CalypsoEnvironment("Transpole");
 
         CalypsoCard passPass = new CalypsoCard(getDefaultCard(), env);
         passPass.read();
         passPass.dump();
         passPass.dumpTrips();
+        // TODO : Profiles
+        //passPass.dumpProfiles();
         // TODO : Contracts
         //passPass.dumpContracts();
         passPass.disconnect();

@@ -22,8 +22,8 @@ First, if you don't know the card structure, you may want to build one based on 
 
 Each public transport operator has its own ticketing policy and thus card structure. But in practice, LFIs don't change that much, and the content should be parsed quite nicely out of the box (except for route and stop names which are network dependant).
 
-For optimal results, copy and customize `CalypsoLille.xml` with your own card structure (maybe you'll find some PDFs here and there from your network operator).
-Then, copy and customize `TopoLille.xml` to add your own metro/bus/... stops and routes. Again, interesting PDFs can be found laying on non .htaccess protected directories.
+For optimal results, copy and customize `networks/250/149/cardstruct.xml` with your own card structure (maybe you'll find some PDFs here and there from your network operator).
+Then, copy and customize `networks/250/149/topology.xml` to add your own metro/bus/... stops and routes. Again, interesting PDFs can be found in non .htaccess protected directories. Time to put your Google-fu to the test ;)
 
 
 # CalypsoFileFinder:
@@ -36,5 +36,11 @@ Thus, rebuilding the card structure becomes quite easy.
 First, you have to list enumerate the files on the card using CalypsoFileFinder (option #1).
 Then, edit `fileList.out.xml` to configure the card structure (DFs, file descriptions, remove useless files..) and rename it to `fileList.xml` in order to search through those files.
 
-Once you're done, edit `fileList.xml` to make it look like `CalypsoLille.xml` and move on to CalypsoInspector.
+Once you're done, edit `fileList.xml` to make it look like the default `cardstruct.xml`, move it to `networks/$countryCode/$networkId` and add a new entry to `networks/networks.xml`.
+Then move on to CalypsoInspector.
+
+# License
+
+Do What the Fuck You Want to Public License (WTFPL)
+Though I'd be interested to hear from other people tinkering with Calypso Cards ;)
 

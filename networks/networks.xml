@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<countries>
+    <country id="250" name="France">
+        <network id="149" name="Transpole"/>
+    </country>
+</countries>

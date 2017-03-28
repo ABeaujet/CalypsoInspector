@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<calypsoEnvironment country="France" countryId="250" operator="Transpole/SNCF" networkId="0">
+<calypsoEnvironment country="France" countryId="250" operator="Transpole/SNCF" networkId="149">
     <card type="Calypso"  network="Transpole/SNCF" AID="3MTR.ICA">
         <file identifier="3F04" type="EF" description="AID">
             <field description="AID" length="64" type="string"/>

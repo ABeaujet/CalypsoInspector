@@ -32,16 +32,13 @@ public class CalypsoRecord {
     public boolean fillRecord(byte[] buffer){
         int offset = 0; // en bits !
         this.bits = new BitArray(buffer);
-        //try{
-            for(CalypsoRecordField f : this.fields) {
-                System.out.println(f.getDescription() + " - Offset : " + offset);
+        try{
+            for(CalypsoRecordField f : this.fields)
                 offset += f.fill(buffer, offset);
-            }
-        /*
         }catch(IndexOutOfBoundsException e){
             Logger.getGlobal().severe("Attempting to parse data outside of record !");
             return false;
-        }*/
+        }
         return true;
     }
 

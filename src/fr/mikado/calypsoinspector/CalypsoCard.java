@@ -149,7 +149,7 @@ public class CalypsoCard {
         System.out.println("Calypso card Country="+this.env.getCountryId()+" Network="+this.env.getNetworkId());
         System.out.println("Calypso card number #"+this.getCardNumber());
         String chipVer = this.getChipVersion();
-        System.out.println("Calypso celego chip : version "+chipVer+" (" + (chipVer.equals("3c ") ? "" : "non ") + "compatible NFC Android)");
+        System.out.println("Calypso celego chip : version "+chipVer+" (" + (chipVer.equals("3c ") ? "" : "NOT ") + "Android NFC compatible)");
         System.out.println("ROM version : " + this.getROMVersion());
         System.out.println("ATR :"+ BitArray.bytes2Hex(this.card.getATR().getBytes()));
         System.out.println("Contents :");
