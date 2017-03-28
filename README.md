@@ -1,4 +1,4 @@
-#CalypsoInspector
+# CalypsoInspector
 
 This tools reads Calypso smartcards and tries to parse data. It is primarily aimed at decoding data inside public transport cards complying to the Intercode standard.
 
@@ -9,14 +9,14 @@ This project should be ported to Android and support external OTG readers (ACR12
 This project is tested with the cards used in Lille, France (PassPass or Pass Pass cards). It should also work with Navigo cards, though some changes are necessary due to the complex topology of Paris public transport network (zones, check-outs...).
 I will make this project compatible with Navigo cards once I get a new one, but that shouldn't be that hard.
 
-##Currently available data :
+## Currently available data :
 
 - Holder information
 - Latest check-ins (date, time, route, stop, direction)
 - Holder profiles (very soon)
 - Contracts (maybe soon)
 
-##How to use:
+## How to use:
 
 First, if you don't know the card structure, you may want to build one based on educated guesses using CalypsoFileFinder (see below).
 
@@ -26,7 +26,7 @@ For optimal results, copy and customize `CalypsoLille.xml` with your own card st
 Then, copy and customize `TopoLille.xml` to add your own metro/bus/... stops and routes. Again, interesting PDFs can be found laying on non .htaccess protected directories.
 
 
-#CalypsoFileFinder:
+# CalypsoFileFinder:
 
 This utility enumerates all the files contained on the card (option #1), and allows you to search for bit patterns in the files (#2).
 If a card structure is loaded, you can search through record fields as well, and get an nice and readable output.
