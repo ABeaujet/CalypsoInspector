@@ -100,7 +100,7 @@
                     </field>
                 </field>
             </file>
-            <!-- Contract list MUST be processes before Contracts since it determines the mappings of contract records. -->
+            <!-- Contract list MUST be processed before Contracts since it determines the mappings of contract records. -->
             <file LFI="2050" SFI="1E" type="EF" description="Contract List">
                 <field description="BestContractCount"                       length="4"   type="repeat">
                     <field description="BestContract"                        length="3"   type="bitmap">
@@ -110,7 +110,7 @@
                     </field>
                 </field>
             </file>
-            <file LFI="2030" type="EF" description="Contracts" multipleMappings="yes">
+            <file LFI="2020;2030" type="EF" description="Contracts" multipleMappings="yes">
                 <fileMapping name="17h">
                     <field description="PublicTransportContractBitmap"       length="7"   type="bitmap">
                         <field description="ContractProvider"                length="8"   type="undefined"/>

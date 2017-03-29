@@ -43,12 +43,14 @@ public class CalypsoRecord {
         return true;
     }
 
-    public void print(int n){
-        System.out.println(CalypsoFile.nesting(n) + "Raw contents : " + this.getBitsAsHex());
-        if(this.mappingName != null)
-            System.out.println(CalypsoFile.nesting(n) + "Mapping name : " + this.getMappingName());
+    public void print(int n, boolean debug){
+        if(debug) {
+            System.out.println(CalypsoFile.nesting(n) + "Raw contents : " + this.getBitsAsHex());
+            if (this.mappingName != null)
+                System.out.println(CalypsoFile.nesting(n) + "Mapping name : " + this.getMappingName());
+        }
         for(CalypsoRecordField f : this.fields)
-            f.print(n+1);
+            f.print(n+1, debug);
     }
 
     public CalypsoRecordField getRecordField(String description){
@@ -81,6 +83,13 @@ public class CalypsoRecord {
 
     public String getMappingName(){
         return this.mappingName;
+    }
+
+    public boolean isEmpty(){
+        for(CalypsoRecordField rf : this.fields)
+            if(rf.isFilled())
+                return false;
+        return true;
     }
 }
 

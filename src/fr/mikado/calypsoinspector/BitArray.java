@@ -215,8 +215,6 @@ public class BitArray {
     public boolean equals(BitArray b){
         if(b == null)
             return false;
-        if( !(b instanceof BitArray))
-            return false;
         if(this.bits.size() != b.bits.size())
             return false;
         for(int i = 0;i<this.getSize();i++)
@@ -250,5 +248,16 @@ public class BitArray {
     public int find(long needle, int needleSize){
         BitArray needleBits = new BitArray(needle, needleSize);
         return this.find(needleBits);
+    }
+
+    /**
+     * Checks if all bits are zeroes
+     * @return All bits are zeroes
+     */
+    public boolean isNull(){
+        for(Boolean b : this.bits)
+            if(b)
+                return false;
+        return true;
     }
 }

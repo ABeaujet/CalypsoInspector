@@ -13,7 +13,7 @@ public class Main {
 
         CalypsoCard passPass = new CalypsoCard(getDefaultCard(), env);
         passPass.read();
-        passPass.dump();
+        passPass.dump(false);
         passPass.dumpTrips();
         passPass.dumpProfiles();
         // TODO : Contracts

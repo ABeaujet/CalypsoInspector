@@ -100,7 +100,7 @@ public class CalypsoCardSearch {
         System.out.println("Searching...");
         for(CalypsoFile f : this.card.getEnvironment().getFiles())
             findBitsInFile(f, needle);
-        this.card.dump();
+        this.card.dump(true);
     }
 
     public void dumpResults(){

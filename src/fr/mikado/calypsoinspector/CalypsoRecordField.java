@@ -1,6 +1,7 @@
 package fr.mikado.calypsoinspector;
 
 import com.sun.istack.internal.Nullable;
+import com.sun.org.apache.regexp.internal.RE;
 import org.jdom2.Document;
 import org.jdom2.Element;
 
@@ -219,6 +220,9 @@ public class CalypsoRecordField {
             return 0;
 
         this.bits = new BitArray(buffer, offset, this.length);
+        if(this.bits.isNull()) // if bitmap is empty, do nothing more
+            return this.length;
+
         int consumed = this.length;
         this.filled = true;
 
@@ -444,21 +448,24 @@ public class CalypsoRecordField {
      * Prints the contents of the record field
      * @param n Indent level
      */
-    public void print(int n){
+    public void print(int n, boolean debug){
         if(!this.filled)
             return;
         System.out.println(nesting(n)+"> "+this.description);
-        System.out.println(nesting(n)+"   - Type : "+this.type.getTypeName());
-        System.out.println(nesting(n)+"   - Size : "+this.length);
-        System.out.println(nesting(n)+"   - Converted value : "+this.convertedValue);
+        if(debug) {
+            System.out.println(nesting(n) + "   - Type : " + this.type.getTypeName());
+            System.out.println(nesting(n) + "   - Size : " + this.length);
+        }
+        if(this.type != Bitmap && this.type != Repeat)
+            System.out.println(nesting(n) + "   - Converted value : " + this.convertedValue);
         if(this.type == Bitmap || this.type == Repeat) {
             System.out.println(nesting(n) + "   - Subfields :");
             for (CalypsoRecordField f : this.subfields)
-                f.print(n+1);
+                f.print(n+1, debug);
         }
     }
     public void print(){
-        this.print(0);
+        this.print(0, true);
     }
     public java.lang.String getConvertedValue() {
         return convertedValue;
@@ -485,5 +492,8 @@ public class CalypsoRecordField {
     }
     public CalypsoRecord getParentRecord(){
         return this.parentRecord;
+    }
+    public boolean isFilled(){
+        return this.filled;
     }
 }

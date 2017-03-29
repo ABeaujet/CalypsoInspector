@@ -1,5 +1,7 @@
 package fr.mikado.calypsoinspector;
 
+import com.sun.istack.internal.Nullable;
+
 import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
@@ -63,7 +65,9 @@ public class CalypsoCard {
      * Reads the contents of the file using the structure information contained in the Calypso Environment.
      */
     public void read(){
-        env.getFiles().forEach(this::readFile);
+        for(CalypsoFile f : env.getFiles())
+            for(Integer LFI : f.getLFIs())
+                this.readFile(f, LFI);
     }
 
     /**
@@ -87,8 +91,8 @@ public class CalypsoCard {
         return this.card.getBasicChannel().transmit(new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xB2, (byte) recordId, 0x04, 0x00}));
     }
 
-    private boolean selectFile(CalypsoFile f){
-        return selectFileFromLFI(f.getLFI());
+    private boolean selectFile(CalypsoFile f, int LFI){
+        return selectFileFromLFI(LFI);
     }
 
     /**
@@ -114,10 +118,11 @@ public class CalypsoCard {
     /**
      * Reads the contents of a CalypsoFile on the card.
      * @param f CalypsoFile
+     * @param LFI Which LFI to use for this file
      */
-    public void readFile(CalypsoFile f){
+    public void readFile(CalypsoFile f, @Nullable Integer LFI){
         if(!f.isSFIAddressable())
-            if(!this.selectFile(f)){
+            if(!this.selectFile(f, LFI)){
                 Logger.getGlobal().warning("Could not select file "+f.getIdentifier()+" ! Skipping...");
                 return;
             }
@@ -144,7 +149,12 @@ public class CalypsoCard {
                 f.newRecord(responseAPDU.getData());
             }
         }else
-            f.getChildren().forEach(this::readFile);
+            for(CalypsoFile child : f.getChildren())
+                if(child.isSFIAddressable())
+                    this.readFile(child, null);
+                else
+                    for(Integer LFIe : child.getLFIs())
+                        this.readFile(child, LFIe);
     }
 
     public void disconnect(){
@@ -159,16 +169,18 @@ public class CalypsoCard {
      * Prints all the data from the CalypsoCard.
      * @throws CardException
      */
-    public void dump() throws CardException {
-        System.out.println("Calypso card Country="+this.env.getCountryId()+" Network="+this.env.getNetworkId());
-        System.out.println("Calypso card number #"+this.getCardNumber());
-        String chipVer = this.getChipVersion();
-        System.out.println("Calypso celego chip : version "+chipVer+" (" + (chipVer.equals("3c ") ? "" : "NOT ") + "Android NFC compatible)");
-        System.out.println("ROM version : " + this.getROMVersion());
-        System.out.println("ATR :"+ BitArray.bytes2Hex(this.card.getATR().getBytes()));
+    public void dump(boolean debug) throws CardException {
+        System.out.println("Calypso card Country=" + this.env.getCountryId() + " Network=" + this.env.getNetworkId());
+        System.out.println("Calypso card number #" + this.getCardNumber());
+        if(debug) {
+            String chipVer = this.getChipVersion();
+            System.out.println("Calypso celego chip : version " + chipVer + " (" + (chipVer.equals("3c ") ? "" : "NOT ") + "Android NFC compatible)");
+            System.out.println("ROM version : " + this.getROMVersion());
+            System.out.println("ATR :" + BitArray.bytes2Hex(this.card.getATR().getBytes()));
+        }
         System.out.println("Contents :");
         for(CalypsoFile f : this.env.getFiles())
-            f.dump(1);
+            f.dump(1, debug);
     }
 
     /**
@@ -197,7 +209,6 @@ public class CalypsoCard {
                 String route = event.getSubfield("EventRouteNumber").getConvertedValue();
                 String direction = event.getSubfield("EventData").getSubfield("EventDataRouteDirection").getConvertedValue();
 
-                // TODO : THIS IS BUGGED. Apparently, some contracts are stored in 2020 and some in 2030. Ugh...
                 String fare = "<Contracts not loaded>";
                 if(contracts != null) {
                     // which contract for this event ?
@@ -205,8 +216,6 @@ public class CalypsoCard {
                     int farePointer = event.getSubfield("EventContractPointer").getBits().getInt();
                     int contractIndex = this.env.getContractIndex(farePointer);
                     if (contractIndex >= 0) {
-                        //System.out.println("Contract index : " + contractIndex);
-                        //System.out.println("Fare pointer   : " + farePointer);
                         CalypsoRecord contract = contracts.getRecords().get(contractIndex);
                         CalypsoRecordField contractBitmap = contract.getRecordField("PublicTransportContractBitmap");
                         CalypsoRecordField contractType = contractBitmap.getSubfield("ContractType");
@@ -230,9 +239,13 @@ public class CalypsoCard {
         CalypsoRecordField holderProfiles = envHolderRec.getRecordField("Holder Bitmap").getSubfield("Holder Profiles(0..4)");
 
         for(CalypsoRecordField f : holderProfiles.getSubfields()) {
+            if(!f.isFilled()) {
+                System.out.println("No profiles.");
+                break;
+            }
             System.out.println("Profile :");
-            System.out.println(" Label :      " + f.getSubfield("Profile Number").getConvertedValue());
-            System.out.println(" End date :   " + f.getSubfield("Profile Date").getConvertedValue());
+            System.out.println(" Label        : " + f.getSubfield("Profile Number").getConvertedValue());
+            System.out.println(" Profile date : " + f.getSubfield("Profile Date").getConvertedValue());
         }
         System.out.print("\n");
     }
