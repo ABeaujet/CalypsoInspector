@@ -6,7 +6,12 @@ import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import static fr.mikado.calypsoinspector.CalypsoFile.CalypsoFileType.EF;
@@ -250,7 +255,45 @@ public class CalypsoCard {
         System.out.print("\n");
     }
 
+    public void dumpContracts() throws ParseException {
+        String fare = "";
+        DateFormat format = new SimpleDateFormat("dd/MM/yyy", Locale.FRANCE);
+        Date now = new Date();
+
+        CalypsoFile contracts = env.getFile("Contracts");
+        if(contracts != null) {
+            // which contract for this event ?
+            for(CalypsoRecord contract : contracts.getRecords()) {
+                CalypsoRecordField contractBitmap = contract.getRecordField("PublicTransportContractBitmap");
+                CalypsoRecordField contractType = contractBitmap.getSubfield("ContractType");
+                CalypsoRecordField contractValidity = contractBitmap.getSubfield("ContractValidityInfo");
+                CalypsoRecordField contractStart = contractValidity.getSubfield("ContractValidityStartDate");
+                CalypsoRecordField contractEnd = contractValidity.getSubfield("ContractValidityEndDate");
+                String contractEndStr = contractEnd.getConvertedValue();
+                System.out.println("Contract :");
+                System.out.println("   Label      : " + contractType.getConvertedValue());
+                System.out.println("   Start date : " + contractStart.getConvertedValue());
+                System.out.print("   End date   : " + contractEndStr);
+                if(contractEndStr.length() > 0 && now.after(format.parse(contractEndStr)))
+                    System.out.print(" (EXPIRED)");
+                System.out.print("\n");
+            }
+        }else
+            System.out.println("<Contracts not loaded>");
+    }
+
     public CalypsoEnvironment getEnvironment(){
         return this.env;
     }
 }
+
+
+
+
+
+
+
+
+
+
+

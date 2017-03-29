@@ -403,6 +403,10 @@ public class CalypsoEnvironment {
         return -1;
     }
 
+    public ArrayList<Integer> getContractPointers(){
+        return this.contractPointers;
+    }
+
     public CalypsoFile getFile(String description){
         for(CalypsoFile f : this.getFiles()) {
             if (f.getDescription().equals(description))
