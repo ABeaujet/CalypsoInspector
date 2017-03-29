@@ -13,14 +13,17 @@ NONE OF THE INFORMATION IN THIS REPO SHOULD BE TAKEN AS FACE VALUE. Just in case
 
 ## Currently available data :
 
+- Environment
 - Holder information
-- Latest check-ins (date, time, route, stop, direction, contract)
 - Holder profiles
+- Latest check-ins (date, time, route, stop, direction, contract)
+- Contract list
 - File Mappings : some files (like contracts) may have several different layouts depending on other fields.
 
 ## TODO :
-
-- Contract list
+- Support for more CalypsoRecordField.Type
+- Android port
+- Android support for external readers
 
 ## How to use:
 
