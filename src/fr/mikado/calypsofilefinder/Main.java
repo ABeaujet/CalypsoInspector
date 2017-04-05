@@ -1,15 +1,16 @@
 package fr.mikado.calypsofilefinder;
 
-import fr.mikado.calypsoinspector.BitArray;
-import fr.mikado.calypsoinspector.CalypsoEnvironment;
+import fr.mikado.calypso.BitArray;
+import fr.mikado.calypso.CalypsoEnvironment;
+import fr.mikado.isodep.CardException;
+import fr.mikado.isodep.CommandAPDU;
+import fr.mikado.isodep.IsoDepInterface;
 import org.jdom2.Comment;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-import javax.smartcardio.*;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -62,7 +63,7 @@ public class Main {
         }while(invalidChoice);
     }
 
-    public static void findAllFiles(Card c) throws CardException, IOException {
+    public static void findAllFiles(IsoDepInterface c) throws CardException, IOException {
         Element root = new Element("calypsoEnvironment");
         Element card = new Element("card");
         root.addContent(card);
@@ -89,11 +90,11 @@ public class Main {
         outputter.output(doc, new FileWriter(new File("fileList.out.xml")));
     }
 
-    public static boolean selectFile(Card c, int id) throws CardException {
+    public static boolean selectFile(IsoDepInterface c, int id) throws CardException {
 
         CommandAPDU cAPDU = new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xA4, 0x00, 0x00, 0x02, (byte) ((id>>8)&0xff), (byte) (id&0xff), 0x00});
 
-        return c.getBasicChannel().transmit(cAPDU).getSW() == 0x9000;
+        return c.transmit(cAPDU).getSW() == 0x9000;
     }
 }
 

@@ -1,8 +1,6 @@
-package fr.mikado.calypsoinspector;
+package fr.mikado.calypso;
 
 import java.util.HashMap;
-
-import static fr.mikado.calypsoinspector.SWDecoder.*;
 
 /**
  * Contains information from there, so some SWs may be EMV related : https://www.eftlab.co.uk/index.php/site-map/knowledge-base/118-apdu-response-list

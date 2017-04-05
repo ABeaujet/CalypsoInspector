@@ -1,4 +1,4 @@
-package fr.mikado.calypsoinspector;
+package fr.mikado.calypso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,6 +86,9 @@ public class CalypsoRecord {
     }
 
     public boolean isEmpty(){
+        /*
+        return this.bits.isNull();
+        */
         for(CalypsoRecordField rf : this.fields)
             if(rf.isFilled())
                 return false;

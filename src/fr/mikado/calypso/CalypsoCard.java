@@ -1,20 +1,19 @@
-package fr.mikado.calypsoinspector;
+package fr.mikado.calypso;
 
 import com.sun.istack.internal.Nullable;
+import fr.mikado.isodep.CardException;
+import fr.mikado.isodep.CommandAPDU;
+import fr.mikado.isodep.IsoDepInterface;
+import fr.mikado.isodep.ResponseAPDU;
 
-import javax.smartcardio.Card;
-import javax.smartcardio.CardException;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import static fr.mikado.calypsoinspector.CalypsoFile.CalypsoFileType.EF;
+import static fr.mikado.calypso.CalypsoFile.CalypsoFileType.EF;
 
 /**
  * This class describes a Calypso Card from a Card and a CalypsoEnvironment.
@@ -22,9 +21,9 @@ import static fr.mikado.calypsoinspector.CalypsoFile.CalypsoFileType.EF;
  */
 public class CalypsoCard {
     private CalypsoEnvironment env;
-    private Card card;
+    private IsoDepInterface card;
 
-    public CalypsoCard(Card card, CalypsoEnvironment env){
+    public CalypsoCard(IsoDepInterface card, CalypsoEnvironment env){
         this.card = card;
         this.env = env;
     }
@@ -33,7 +32,7 @@ public class CalypsoCard {
      * @return The serial number printed on the card.
      */
     public long getCardNumber(){
-        BitArray atr = new BitArray(card.getATR().getBytes(), 40, 32);
+        BitArray atr = new BitArray(card.getATR(), 40, 32);
         return atr.getLong();
     }
 
@@ -41,7 +40,7 @@ public class CalypsoCard {
         CommandAPDU c = new CommandAPDU(new byte[]{(byte)0x00, (byte)0x10, 0x00, 0x00, 0x00});
         ResponseAPDU r;
         try {
-            r = this.card.getBasicChannel().transmit(c);
+            r = this.card.transmit(c);
         } catch (CardException e) {
             System.out.println("Error while getting response APDU while asking for chip properties.");
             throw(e);
@@ -58,7 +57,7 @@ public class CalypsoCard {
         CommandAPDU c = new CommandAPDU(new byte[]{(byte)0x00, (byte)0x10, 0x00, 0x00, 0x00});
         ResponseAPDU r;
         try {
-            r = this.card.getBasicChannel().transmit(c);
+            r = this.card.transmit(c);
         } catch (CardException e) {
             System.out.println("Error while getting response APDU while asking for chip properties.");
             throw(e);
@@ -83,7 +82,7 @@ public class CalypsoCard {
      * @throws CardException
      */
     private ResponseAPDU readRecordSFI(int SFI, int recordId) throws CardException {
-        return this.card.getBasicChannel().transmit(new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xB2, (byte) recordId, (byte)(0x04 + (SFI<<3)), 0x00}));
+        return this.card.transmit(new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xB2, (byte) recordId, (byte)(0x04 + (SFI<<3)), 0x00}));
     }
 
     /**
@@ -93,7 +92,7 @@ public class CalypsoCard {
      * @throws CardException
      */
     private ResponseAPDU readRecordLFI(int recordId) throws CardException {
-        return this.card.getBasicChannel().transmit(new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xB2, (byte) recordId, 0x04, 0x00}));
+        return this.card.transmit(new CommandAPDU(new byte[]{(byte) 0x94, (byte) 0xB2, (byte) recordId, 0x04, 0x00}));
     }
 
     private boolean selectFile(CalypsoFile f, int LFI){
@@ -110,13 +109,13 @@ public class CalypsoCard {
         ResponseAPDU r;
 
         try {
-            r = this.card.getBasicChannel().transmit(c);
+            r = this.card.transmit(c);
         } catch (CardException e) {
-            System.out.println("Cannot select file LFI:"+LFI+" : " + e.getMessage());
+            System.out.println("Cannot select file LFI:"+Integer.toHexString(LFI)+"h : " + e.getMessage());
             return false;
         }
         if(r.getSW() != 0x9000)
-            System.out.println("Error while selecting file LFI:"+LFI+" : " + SWDecoder.decode(r.getSW()));
+            System.out.println("Error while selecting file LFI:"+Integer.toHexString(LFI)+"h : " + SWDecoder.decode(r.getSW()));
         return r.getSW() == 0x9000;
     }
 
@@ -127,10 +126,8 @@ public class CalypsoCard {
      */
     public void readFile(CalypsoFile f, @Nullable Integer LFI){
         if(!f.isSFIAddressable())
-            if(!this.selectFile(f, LFI)){
-                Logger.getGlobal().warning("Could not select file "+f.getIdentifier()+" ! Skipping...");
+            if(!this.selectFile(f, LFI))
                 return;
-            }
 
         ResponseAPDU responseAPDU;
         if(f.getType() == EF) {
@@ -164,7 +161,7 @@ public class CalypsoCard {
 
     public void disconnect(){
         try {
-            this.card.disconnect(false);
+            this.card.disconnect();
         } catch (CardException e) {
             Logger.getGlobal().warning("Error while disconnecting the card. Don't care.");
         }
@@ -181,7 +178,7 @@ public class CalypsoCard {
             String chipVer = this.getChipVersion();
             System.out.println("Calypso celego chip : version " + chipVer + " (" + (chipVer.equals("3c ") ? "" : "NOT ") + "Android NFC compatible)");
             System.out.println("ROM version : " + this.getROMVersion());
-            System.out.println("ATR :" + BitArray.bytes2Hex(this.card.getATR().getBytes()));
+            System.out.println("ATR :" + BitArray.bytes2Hex(this.card.getATR()));
         }
         System.out.println("Contents :");
         for(CalypsoFile f : this.env.getFiles())
@@ -266,6 +263,7 @@ public class CalypsoCard {
             for(CalypsoRecord contract : contracts.getRecords()) {
                 CalypsoRecordField contractBitmap = contract.getRecordField("PublicTransportContractBitmap");
                 CalypsoRecordField contractType = contractBitmap.getSubfield("ContractType");
+                CalypsoRecordField contractStatus= contractBitmap.getSubfield("ContractStatus");
                 CalypsoRecordField contractValidity = contractBitmap.getSubfield("ContractValidityInfo");
                 CalypsoRecordField contractStart = contractValidity.getSubfield("ContractValidityStartDate");
                 CalypsoRecordField contractEnd = contractValidity.getSubfield("ContractValidityEndDate");
@@ -277,9 +275,11 @@ public class CalypsoCard {
                 if(contractEndStr.length() > 0 && now.after(format.parse(contractEndStr)))
                     System.out.print(" (EXPIRED)");
                 System.out.print("\n");
+                System.out.println("   Status     : " + contractStatus.getConvertedValue());
             }
         }else
             System.out.println("<Contracts not loaded>");
+        System.out.print("\n");
     }
 
     public CalypsoEnvironment getEnvironment(){

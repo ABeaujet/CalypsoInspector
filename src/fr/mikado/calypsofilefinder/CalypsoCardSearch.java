@@ -1,9 +1,9 @@
 package fr.mikado.calypsofilefinder;
 
-import fr.mikado.calypsoinspector.*;
+import fr.mikado.calypso.*;
+import fr.mikado.isodep.CardException;
+import fr.mikado.isodep.IsoDepInterface;
 
-import javax.smartcardio.Card;
-import javax.smartcardio.CardException;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -60,7 +60,7 @@ public class CalypsoCardSearch {
         this.results = new ArrayList<>();
     }
 
-    public CalypsoCardSearch(Card c, CalypsoEnvironment cardEnv, BitArray needle) throws IOException {
+    public CalypsoCardSearch(IsoDepInterface c, CalypsoEnvironment cardEnv, BitArray needle) throws IOException {
         this.needle = needle;
         this.card= new CalypsoCard(c, cardEnv);
         this.results = new ArrayList<>();

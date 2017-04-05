@@ -1,13 +1,10 @@
-package fr.mikado.calypsoinspector;
+package fr.mikado.calypso;
 
-import com.sun.istack.internal.Nullable;
-import com.sun.org.apache.xml.internal.security.algorithms.implementations.IntegrityHmac;
 import org.jdom2.Element;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * This class describes a Calypso File.
@@ -48,9 +45,9 @@ public class CalypsoFile {
     /**
      * Creates a Calypso File from an XML node.
      * @param e An XML node
-     * @param env Current Calypso Environment (nullable)
+     * @param env Current Calypso Environment
      */
-    public CalypsoFile(Element e, @Nullable CalypsoEnvironment env){
+    public CalypsoFile(Element e, CalypsoEnvironment env){
         this.children = new ArrayList<>();
         this.records = new ArrayList<>();
         this.LFIs = new ArrayList<>();

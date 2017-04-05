@@ -1,5 +1,8 @@
 package fr.mikado.calypsoinspector;
 
+import fr.mikado.calypso.CalypsoCard;
+import fr.mikado.calypso.CalypsoEnvironment;
+
 import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
@@ -13,14 +16,14 @@ public class Main {
 
         CalypsoCard passPass = new CalypsoCard(getDefaultCard(), env);
         passPass.read();
-        passPass.dump(true);
-        passPass.dumpTrips();
+        passPass.dump(false);
         passPass.dumpProfiles();
         passPass.dumpContracts();
+        passPass.dumpTrips();
         passPass.disconnect();
     }
 
-    public static Card getDefaultCard() throws CardException {
+    public static IsoDepImpl getDefaultCard() throws CardException {
         CardTerminal term = null;
         try {
             term = TerminalFactory.getDefault().terminals().list().get(0);
@@ -34,6 +37,6 @@ public class Main {
         term.waitForCardPresent(0);
         System.out.println("Card found !");
 
-        return term.connect("T=1");
+        return new IsoDepImpl(term.connect("T=1"));
     }
 }

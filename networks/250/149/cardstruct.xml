@@ -5,11 +5,13 @@
             <field description="AID" length="64" type="string"/>
         </file>
         <file LFI="1000" type="DF" description="Unknown">
-            <!--<file LFI="1004" type="EF" description="Unknown"/>-->
             <file LFI="1014" type="EF" description="Load log"/>
             <file LFI="1015" type="EF" description="Purchase Log"/>
         </file>
-        <file LFI="2000" type="DF" description="ticketing">
+        <file LFI="2000" type="DF" description="Ticketing">
+            <file LFI="202A;202B;202C;202D;202E;202F;2060;2061;2062" type="EF" description="Counters">
+                <field description="CounterValue"                            length="24" type="undefined"/>
+            </file>
             <file LFI="2001" SFI="07" type="EF" description="Environment, Holder">
                 <field description="EnvVersionNumber"                        length="6"  type="undefined"/>
                 <field description="Env"                                     length="7"  type="bitmap">

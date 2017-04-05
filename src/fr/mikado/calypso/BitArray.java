@@ -1,4 +1,4 @@
-package fr.mikado.calypsoinspector;
+package fr.mikado.calypso;
 
 import java.util.ArrayList;
 import java.util.Collections;

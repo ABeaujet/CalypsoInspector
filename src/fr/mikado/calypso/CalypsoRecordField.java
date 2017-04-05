@@ -1,7 +1,6 @@
-package fr.mikado.calypsoinspector;
+package fr.mikado.calypso;
 
 import com.sun.istack.internal.Nullable;
-import com.sun.org.apache.regexp.internal.RE;
 import org.jdom2.Document;
 import org.jdom2.Element;
 
@@ -11,7 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
-import static fr.mikado.calypsoinspector.CalypsoRecordField.FieldType.*;
+import static fr.mikado.calypso.CalypsoRecordField.FieldType.*;
 
 /**
  * This class describes a field inside a calypso record.
