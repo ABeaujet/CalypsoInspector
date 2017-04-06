@@ -399,7 +399,6 @@ public class CalypsoEnvironment {
             throw new JDOMParseException("First first level child element should be a card.", new Throwable("throwable"));
         }
 
-        this.cardStructure = new ArrayList<>();
         for(Element e : cardElement.getChildren()) {
             CalypsoFile nf = new CalypsoFile(e, this);
             this.cardStructure.add(nf);
@@ -485,5 +484,14 @@ public class CalypsoEnvironment {
             for (CalypsoFile ff : f.getChildren())
                 f.deleteRecords();
         }
+    }
+
+    public void clear(){
+        this.routes = new HashMap<>();
+        this.stops = new HashMap<>();
+        this.profiles = new HashMap<>();
+        this.fares = new HashMap<>();
+        this.cardStructure = new ArrayList<>();
+        this.contractPointers = new ArrayList<>();
     }
 }

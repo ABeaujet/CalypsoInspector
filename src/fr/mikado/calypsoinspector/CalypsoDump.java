@@ -30,6 +30,7 @@ public class CalypsoDump {
                 String time = rec.getRecordField("Event Time").getConvertedValue();
                 CalypsoRecordField event = rec.getRecordField("Event");
                 String stop = event.getSubfield("EventLocationId").getConvertedValue();
+                String eventCode = event.getSubfield("EventCode").getConvertedValue();
                 String route = event.getSubfield("EventRouteNumber").getConvertedValue();
                 String direction = event.getSubfield("EventData").getSubfield("EventDataRouteDirection").getConvertedValue();
 
@@ -52,6 +53,7 @@ public class CalypsoDump {
                 System.out.println(" Arrêt   : " + stop);
                 System.out.println(" Ligne   : " + route);
                 System.out.println(" Sens    : " + direction);
+                System.out.println(" Code    : " + eventCode);
                 System.out.println(" Contrat : " + fare +"\n");
             }
         }

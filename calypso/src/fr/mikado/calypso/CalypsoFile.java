@@ -138,6 +138,17 @@ public class CalypsoFile {
             f.deleteRecords();
     }
 
+    public ArrayList<byte[]> getRawRecords(){
+        if(this.type != CalypsoFileType.EF)
+            return null;
+        ArrayList<byte[]> records = new ArrayList<>();
+
+        for(CalypsoRecord r : this.records)
+            records.add(r.getBits().getBytes());
+
+        return records;
+    }
+
     public static String nesting(int level){
         StringBuilder r = new StringBuilder();
         for (int j = 0; j < level; j++)
@@ -214,8 +225,7 @@ public class CalypsoFile {
             this.mappings.clear();
             defaultMapping = null;
         }
-        //this.mappings.put(index, mappingName);
-        this.mappings.add(new MappingTuple<Integer, String>(index, mappingName));
+        this.mappings.add(new MappingTuple<>(index, mappingName));
         return true;
     }
 }

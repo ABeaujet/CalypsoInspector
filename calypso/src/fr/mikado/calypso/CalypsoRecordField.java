@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import static fr.mikado.calypso.CalypsoRecordField.FieldType.*;
 
+
 /**
  * This class describes a field inside a calypso record.
  * A Calypso Record is basically an array of fields.
@@ -19,8 +20,8 @@ import static fr.mikado.calypso.CalypsoRecordField.FieldType.*;
 public class CalypsoRecordField {
 
     enum FieldType {
-        Bitmap, Pointer, Date, Time, DateTime, Amount, Number, NetworkId, BcdDate, String, Repeat, Route, Stop, Vehicle, Direction, PayMethod, YesNo, Name, Gender, ContractStatus, ContractType, ContractTariff, ContractPointer, Profile, Undefined;
-        public static String[] n = {"Bitmap", "Pointer", "Date", "Time", "DateTime", "Amount", "Number", "NetworkId", "BcdDate", "String", "Repeat", "Route", "Stop", "Vehicle", "Direction", "PayMethod", "YesNo", "Name", "Gender", "ContractStatus", "ContractType", "ContractTariff", "ContractPointer", "Profile", "Undefined"};
+        Bitmap, Pointer, Date, Time, DateTime, Amount, Number, NetworkId, BcdDate, String, Repeat, Route, Stop, Vehicle, Direction, PayMethod, YesNo, Name, Gender, ContractStatus, ContractType, ContractTariff, ContractPointer, Profile, EventCode, CardStatus, Undefined;
+        public static String[] n = {"Bitmap", "Pointer", "Date", "Time", "DateTime", "Amount", "Number", "NetworkId", "BcdDate", "String", "Repeat", "Route", "Stop", "Vehicle", "Direction", "PayMethod", "YesNo", "Name", "Gender", "ContractStatus", "ContractType", "ContractTariff", "ContractPointer", "Profile", "EventCode", "CardStatus", "Undefined"};
         public static int c= 0;
         private int cc= 0;
         FieldType(){ this.cc = FieldType.getC(); }
@@ -86,6 +87,10 @@ public class CalypsoRecordField {
         contractStatuses.put(127,"Invalid et reimbursed");
         contractStatuses.put(255,"Deletable");
     }
+
+    private static String[] eventTypes = {"Non spécifié", "Entrée", "Sortie", "Contrôle", "Correspondance entrante", "Correspondance sortante", "Changement de sens ?"};
+    private static String[] vehicleTypes = {"Non spécifié", "Bus urbain", "Bus interrurbain", "Métro", "Tramway", "Train", "Parking"};
+    private static String[] cardStatuses = {"Anonyme", "Declarative", "Personnalisée", "Codage spécifique"};
 
     private CalypsoEnvironment env;
     private CalypsoRecord parentRecord;
@@ -183,6 +188,10 @@ public class CalypsoRecordField {
                 return ContractPointer;
             case "profile":
                 return Profile;
+            case "eventcode":
+                return EventCode;
+            case "cardstatus":
+                return CardStatus;
             default:
                 return Undefined;
         }
@@ -245,6 +254,8 @@ public class CalypsoRecordField {
             case String:
                 this.convertedValue = new String(this.bits.getChars());
                 break;
+            case Pointer:
+                break;
             case Date:
                 int timestamp = 852073200 + this.bits.getInt() * 24 * 3600; // or maybe 852091200 ?
                 java.util.Date date = new Date((long) timestamp * 1000);
@@ -272,6 +283,10 @@ public class CalypsoRecordField {
                     this.convertedValue = payMethods.get(methNo);
                 else
                     this.convertedValue = "Méthode de paiement inconnue !";
+                break;
+            case DateTime:
+                break;
+            case Amount:
                 break;
             case Number:
                 if (this.length < 8) { // < et non <= car types signés.
@@ -425,7 +440,25 @@ public class CalypsoRecordField {
                 if(this.convertedValue == null)
                     this.convertedValue = ""+bits.getInt();
                 break;
-            default:  // et donc Undefined
+            case EventCode:
+                int vehicleType = (bits.getInt() >> 4) & 0xf;
+                int eventType = bits.getInt() & 0xf;
+                this.convertedValue = "";
+                if(eventType < eventTypes.length)
+                    this.convertedValue = eventTypes[eventType];
+                this.convertedValue += ":";
+                if(eventType < vehicleTypes.length)
+                    this.convertedValue += vehicleTypes[vehicleType];
+                break;
+            case CardStatus:
+                int status = bits.getInt();
+                if(status < cardStatuses.length)
+                    this.convertedValue = cardStatuses[status];
+                else
+                    this.convertedValue = bits.toHex() + "h ???";
+                break;
+            case Undefined:
+            default:
                 this.convertedValue = this.bits.toHex();
                 break;
         }

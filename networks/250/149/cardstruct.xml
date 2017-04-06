@@ -47,7 +47,7 @@
                         </field>
                     </field>
                     <field description="Holder Data"                         length="12" type="bitmap">
-                        <field description="HolderDataCardStatus"            length="4"  type="undefined"/>
+                        <field description="HolderDataCardStatus"            length="4"  type="cardStatus"/>
                         <field description="HolderDataTelereglement"         length="4"  type="undefined"/>
                         <field description="HolderDataResidence"             length="17" type="undefined"/>
                         <field description="HolderDataCommercialID"          length="6"  type="undefined"/>
@@ -68,7 +68,7 @@
                 <field description="Event"                                   length="28"  type="bitmap">
                     <field description="EventDisplayData"                    length="8"   type="undefined"/>
                     <field description="EventNetworkId"                      length="24"  type="undefined"/><!-- networkId -->
-                    <field description="EventCode"                           length="8"   type="undefined"/>
+                    <field description="EventCode"                           length="8"   type="eventCode"/>
                     <field description="EventResult"                         length="8"   type="undefined"/>
                     <field description="EventServiceProvider"                length="8"   type="undefined"/>
                     <field description="EventNotOkCounter"                   length="8"   type="undefined"/>
@@ -91,7 +91,7 @@
                     <field description="EventJourneyDistance"                length="16"  type="undefined"/>
                     <field description="EventPriceAmount"                    length="16"  type="amount"/>
                     <field description="EventPriceUnit"                      length="16"  type="undefined"/>
-                    <field description="EventContractPointer"                length="5"   type="undefined"/>
+                    <field description="EventContractPointer"                length="5"   type="number"/>
                     <field description="EventAuthenticator"                  length="16"  type="undefined"/>
                     <field description="EventData"                           length="5"   type="bitmap">
                         <field description="EventDataFirstStamp"             length="14"  type="date"/>
