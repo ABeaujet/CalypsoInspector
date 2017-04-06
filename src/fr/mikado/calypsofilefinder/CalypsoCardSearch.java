@@ -105,7 +105,8 @@ public class CalypsoCardSearch {
 
     public void dumpResults(){
         if(this.results.size() > 0)
-            this.results.forEach(System.out::println);
+            for(SearchResult r : this.results)
+                System.out.println(r);
         else
             System.out.println("No results found :(");
     }

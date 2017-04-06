@@ -39,8 +39,8 @@ public class CalypsoFile {
     private HashMap<String, ArrayList<CalypsoRecordField>> fileMappings; // available mappings, by name
     private ArrayList<MappingTuple<Integer, String>> mappings; // mapping names for each record, card ordered is preserved
     private ArrayList<CalypsoRecordField> activeMapping; // mapping for the next record
+    private ArrayList<CalypsoRecordField> defaultMapping;
     private ArrayList<CalypsoRecord> records;
-    private boolean isDefaultMappingLoaded;
 
     /**
      * Creates a Calypso File from an XML node.
@@ -55,7 +55,7 @@ public class CalypsoFile {
         this.fileMappings = new HashMap<>();
         this.mappings = new ArrayList<>();
         this.activeMapping = null;
-        this.isDefaultMappingLoaded = false;
+        this.defaultMapping = null;
 
         String LFIStr = e.getAttributeValue("LFI");
         if(LFIStr != null)
@@ -77,7 +77,7 @@ public class CalypsoFile {
                 String isDefaultMappingStr = ee.getAttributeValue("default");
                 if (isDefaultMappingStr != null && (isDefaultMappingStr.equals("yes") || isDefaultMappingStr.equals("true"))) {
                     this.activeMapping = mapping;
-                    isDefaultMappingLoaded = true;
+                    this.defaultMapping = mapping;
                 }
             }
         else
@@ -130,6 +130,12 @@ public class CalypsoFile {
         r.setMappingName(activeMappingName);
         if(!r.isEmpty())
             this.records.add(r);
+    }
+
+    public void deleteRecords(){
+        this.records = new ArrayList<>();
+        for(CalypsoFile f : this.children)
+            f.deleteRecords();
     }
 
     public static String nesting(int level){
@@ -204,9 +210,9 @@ public class CalypsoFile {
         ArrayList<CalypsoRecordField> mapping = this.fileMappings.get(mappingName);
         if(mapping == null)
             return false;
-        if(isDefaultMappingLoaded) {
+        if(defaultMapping != null) {
             this.mappings.clear();
-            isDefaultMappingLoaded = false;
+            defaultMapping = null;
         }
         //this.mappings.put(index, mappingName);
         this.mappings.add(new MappingTuple<Integer, String>(index, mappingName));

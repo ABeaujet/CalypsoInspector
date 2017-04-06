@@ -68,7 +68,7 @@ public class CalypsoCard {
     /**
      * Reads the contents of the file using the structure information contained in the Calypso Environment.
      */
-    public void read(){
+    public void read() throws CardException {
         for(CalypsoFile f : env.getFiles())
             for(Integer LFI : f.getLFIs())
                 this.readFile(f, LFI);
@@ -124,7 +124,7 @@ public class CalypsoCard {
      * @param f CalypsoFile
      * @param LFI Which LFI to use for this file
      */
-    public void readFile(CalypsoFile f, @Nullable Integer LFI){
+    public void readFile(CalypsoFile f, @Nullable Integer LFI) throws CardException {
         if(!f.isSFIAddressable())
             if(!this.selectFile(f, LFI))
                 return;
@@ -132,17 +132,12 @@ public class CalypsoCard {
         ResponseAPDU responseAPDU;
         if(f.getType() == EF) {
             for (int i = 1; ; i++) {
-                try {
-                    if(f.isSFIAddressable())
-                        responseAPDU = this.readRecordSFI(f.getSFI(), i);
-                    else
-                        responseAPDU = this.readRecordLFI(i);
-                    if (responseAPDU.getSW() == 0x6A83)
-                        break;
-                } catch (CardException e) {
-                    Logger.getGlobal().warning("Could not read record #"+i+" for file "+f.getIdentifier());
-                    continue;
-                }
+                if(f.isSFIAddressable())
+                    responseAPDU = this.readRecordSFI(f.getSFI(), i);
+                else
+                    responseAPDU = this.readRecordLFI(i);
+                if (responseAPDU.getSW() == 0x6A83)
+                    break;
                 if (responseAPDU.getSW() != 0x9000) {
                     Logger.getGlobal().warning("Could not read record #"+i+" for file "+f.getIdentifier() + "\n" +
                                                 SWDecoder.decode(responseAPDU.getSW()) + " Last read record : " + i);
@@ -173,7 +168,7 @@ public class CalypsoCard {
      */
     public void dump(boolean debug) throws CardException {
         System.out.println("Calypso card Country=" + this.env.getCountryId() + " Network=" + this.env.getNetworkId());
-        System.out.println("Calypso card number #" + this.getCardNumber());
+        //System.out.println("Calypso card number #" + this.getCardNumber());
         if(debug) {
             String chipVer = this.getChipVersion();
             System.out.println("Calypso celego chip : version " + chipVer + " (" + (chipVer.equals("3c ") ? "" : "NOT ") + "Android NFC compatible)");

@@ -16,6 +16,18 @@ import java.util.logging.Logger;
  * This class contains all the complementary information about the network and the structure of the card.
  */
 public class CalypsoEnvironment {
+
+    private class NetworkListItem{
+        public String networkName;
+        public int countryCode;
+        public int networkId;
+        public NetworkListItem(String networkName, int countryCode, int networkId){
+            this.networkName = networkName;
+            this.countryCode = countryCode;
+            this.networkId = networkId;
+        }
+    }
+
     private HashMap<Integer, String>    fares;
     private HashMap<Integer, String>    profiles;
     private HashMap<Integer, String>    stops;
@@ -28,6 +40,7 @@ public class CalypsoEnvironment {
     private boolean profilesConfigured;
     private boolean topologyConfigured;
     private boolean cardStructureConfigured;
+    private HashMap<String, NetworkListItem> networkList;
 
     // dirty and messy
     public ArrayList<Integer> contractPointers;
@@ -44,8 +57,9 @@ public class CalypsoEnvironment {
         this.loadEnvironment(countryCode, networkId);
     }
 
-    public CalypsoEnvironment(String networkName) throws JDOMParseException {
+    public CalypsoEnvironment(String networkName) throws Exception {
         init();
+        this.buildEnvironmentList();
         this.loadEnvironment(networkName);
     }
 
@@ -58,6 +72,38 @@ public class CalypsoEnvironment {
         this.topologyConfigured = false;
         this.cardStructureConfigured = false;
         this.contractPointers = new ArrayList<>();
+    }
+
+    public void buildEnvironmentList(){
+        this.networkList = new HashMap<>();
+        Document networks = this.loadDocument("networks/networks.xml");
+        if(networks == null){
+            System.out.println("You broke my shit nigga. Where my networks/networks.xml ?");
+            return;
+        }
+        Element root = networks.getRootElement();
+        if(root == null){
+            System.out.println("You broke my shit nigga. Where my networks/networks.xml:countries node ?");
+            return;
+        }
+        for(Element country : root.getChildren())
+            for(Element network : country.getChildren()) {
+                String networkName = network.getAttributeValue("name").toLowerCase();
+                int countryCode = Integer.parseInt(network.getParentElement().getAttributeValue("id"));
+                int networkId = Integer.parseInt(network.getAttributeValue("id"));
+
+                this.networkList.put(networkName, new NetworkListItem(networkName, countryCode, networkId));
+            }
+    }
+
+    public ArrayList<String> getAvailableNetworks(){
+        if(this.networkList == null)
+            return null;
+        return new ArrayList<>(this.networkList.keySet());
+    }
+
+    public NetworkListItem getNetworkInfo(String networkName){
+        return this.networkList.get(networkName);
     }
 
     public void loadEnvironment(int countryCode, int networkId) throws JDOMParseException {
@@ -79,28 +125,12 @@ public class CalypsoEnvironment {
         this.setCardStructure(dir+"cardstruct.xml");
     }
 
-    public void loadEnvironment(String networkName) throws JDOMParseException {
+    public void loadEnvironment(String networkName) throws Exception {
         networkName = networkName.toLowerCase();
-        // get countryCode & networkId from networks/networks.xml
-        Document networks = openDocument("networks/networks.xml");
-        if(networks == null){
-            System.out.println("You broke my shit nigga. Where my networks/networks.xml ?");
-            return;
-        }
-        Element root = networks.getRootElement();
-        if(root == null){
-            System.out.println("You broke my shit nigga. Where my networks/networks.xml:countries node ?");
-            return;
-        }
-        for(Element country : root.getChildren())
-            for(Element network : country.getChildren())
-                if(network.getAttributeValue("name").toLowerCase().equals(networkName)){
-                    int countryCode = Integer.parseInt(network.getParentElement().getAttributeValue("id"));
-                    int networkId   = Integer.parseInt(network.getAttributeValue("id"));
-                    System.out.println("Loading network "+countryCode+":"+networkId);
-                    this.loadEnvironment(countryCode, networkId);
-                    return;
-                }
+        NetworkListItem network = this.networkList.get(networkName);
+        if(network == null)
+            throw new Exception("Network not in networks.xml");
+        this.loadEnvironment(network.countryCode, network.networkId);
     }
 
     public static Document openDocument(String filename){
@@ -119,14 +149,25 @@ public class CalypsoEnvironment {
         return doc;
     }
 
+    // Yeah... Two names for the same method, right? Well I both need this to be static (be reusable outside of CalypsoEnv, and be overridable on Android... Ugly.
+    public Document loadDocument(String filename){
+        return openDocument(filename);
+    }
+
+    public boolean setNetworkProfiles(String faresFile) throws JDOMParseException {
+        Document doc = this.loadDocument(faresFile);
+        if(doc == null)
+            return false;
+        return setNetworkProfiles(doc);
+    }
+
     /**
      * Loads the network profiles from an XML file.
-     * @param faresFile Filename of the XML file containing profiles information.
+     * @param doc XML Document containing profiles information.
      * @return Profile information properly loaded.
      * @throws JDOMParseException
      */
-    public boolean setNetworkProfiles(String faresFile) throws JDOMParseException {
-        Document doc = openDocument(faresFile);
+    public boolean setNetworkProfiles(Document doc) throws JDOMParseException {
         if(doc == null)
             return false;
 
@@ -168,14 +209,20 @@ public class CalypsoEnvironment {
         return true;
     }
 
+    public boolean setNetworkFares(String faresFile) throws JDOMParseException {
+        Document doc = this.loadDocument(faresFile);
+        if(doc == null)
+            return false;
+        return setNetworkFares(doc);
+    }
+
     /**
      * Loads the network fares from an XML file.
-     * @param faresFile Filename of the XML file containing fares information.
+     * @param doc  XML Document containing fares information.
      * @return Network fare information properly loaded.
      * @throws JDOMParseException
      */
-    public boolean setNetworkFares(String faresFile) throws JDOMParseException {
-        Document doc = openDocument(faresFile);
+    public boolean setNetworkFares(Document doc) throws JDOMParseException {
         if(doc == null)
             return false;
 
@@ -217,14 +264,20 @@ public class CalypsoEnvironment {
         return true;
     }
 
+    public boolean setNetworkTopology(String topologyFile) throws JDOMParseException {
+        Document doc = this.loadDocument(topologyFile);
+        if(doc == null)
+            return false;
+        return setNetworkTopology(doc);
+    }
+
     /**
      * Loads the network topology (stops and routes) from an XML file.
-     * @param topologyFile Filename of the XML file containing topology information.
+     * @param doc XML Document containing topology information.
      * @return Topology information properly loaded.
      * @throws JDOMParseException
      */
-    public boolean setNetworkTopology(String topologyFile) throws JDOMParseException {
-        Document doc = openDocument(topologyFile);
+    public boolean setNetworkTopology(Document doc) throws JDOMParseException {
         if(doc == null)
             return false;
 
@@ -276,15 +329,21 @@ public class CalypsoEnvironment {
         return true;
     }
 
+    public boolean setCardStructure(String cardStructureFile) throws JDOMParseException {
+        Document doc = this.loadDocument(cardStructureFile);
+        if(doc == null)
+            return false;
+        return setCardStructure(doc);
+    }
+
     /**
      * Loads the card structure (File and their structures) from an XML file.
-     * @param cardStructureFile Filename of the XML file containing card structure information.
+     * @param doc XML Document containing card structure information.
      * @return Card structure information properly loaded.
      * @throws JDOMParseException
      */
-    public boolean setCardStructure(String cardStructureFile) throws JDOMParseException {
+    public boolean setCardStructure(Document doc) throws JDOMParseException {
         this.cardStructure = new ArrayList<>();
-        Document doc = openDocument(cardStructureFile);
         if(doc == null)
             return false;
 
@@ -340,6 +399,7 @@ public class CalypsoEnvironment {
             throw new JDOMParseException("First first level child element should be a card.", new Throwable("throwable"));
         }
 
+        this.cardStructure = new ArrayList<>();
         for(Element e : cardElement.getChildren()) {
             CalypsoFile nf = new CalypsoFile(e, this);
             this.cardStructure.add(nf);
@@ -416,5 +476,14 @@ public class CalypsoEnvironment {
                     return ff;
         }
         return null;
+    }
+
+    public void purgeFilesContents(){
+        this.contractPointers.clear();
+        for(CalypsoFile f : this.getFiles()) {
+            f.deleteRecords();
+            for (CalypsoFile ff : f.getChildren())
+                f.deleteRecords();
+        }
     }
 }

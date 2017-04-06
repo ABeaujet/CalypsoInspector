@@ -2,8 +2,8 @@ package fr.mikado.calypsoinspector;
 
 import fr.mikado.calypso.CalypsoCard;
 import fr.mikado.calypso.CalypsoEnvironment;
+import fr.mikado.isodepimpl.IsoDepImpl;
 
-import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
@@ -15,6 +15,8 @@ public class Main {
         CalypsoEnvironment env = new CalypsoEnvironment("Transpole");
 
         CalypsoCard passPass = new CalypsoCard(getDefaultCard(), env);
+        passPass.read();
+        env.purgeFilesContents();
         passPass.read();
         passPass.dump(false);
         passPass.dumpProfiles();

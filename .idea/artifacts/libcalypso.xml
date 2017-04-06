@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="libcalypso">
+    <output-path>$PROJECT_DIR$/out/artifacts/libcalypso</output-path>
+    <root id="archive" name="libcalypso.jar">
+      <element id="module-output" name="calypso" />
+      <element id="library" level="project" name="org.jdom:jdom2:2.0.6" />
+    </root>
+  </artifact>
+</component>

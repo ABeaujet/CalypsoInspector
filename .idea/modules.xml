@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CalypsoInspector.iml" filepath="$PROJECT_DIR$/CalypsoInspector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/calypso/calypso.iml" filepath="$PROJECT_DIR$/calypso/calypso.iml" />
     </modules>
   </component>
 </project>

@@ -1,4 +1,4 @@
-package fr.mikado.calypsoinspector;
+package fr.mikado.isodepimpl;
 
 import fr.mikado.isodep.CardException;
 import fr.mikado.isodep.CommandAPDU;
