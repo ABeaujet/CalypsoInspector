@@ -16,12 +16,10 @@ public class Main {
 
         CalypsoCard passPass = new CalypsoCard(getDefaultCard(), env);
         passPass.read();
-        env.purgeFilesContents();
-        passPass.read();
         passPass.dump(false);
-        passPass.dumpProfiles();
-        passPass.dumpContracts();
-        passPass.dumpTrips();
+        CalypsoDump.dumpProfiles(env);
+        CalypsoDump.dumpContracts(env);
+        CalypsoDump.dumpTrips(env);
         passPass.disconnect();
     }
 
