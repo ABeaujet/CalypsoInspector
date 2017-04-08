@@ -4,7 +4,7 @@ This tools reads Calypso smartcards and tries to parse data. It is primarily aim
 
 This is essentially based on ISO7816-4 and some pieces of information here and there (access to official documentation for Intercode/Intertic is charged 136.35€).
 
-This project should be ported to Android and support external OTG readers (ACR122U ?)
+The [Android port](http://github.com/ABeaujet/CalypsoInspectorAndroid) is under development. It may eventually support external OTG readers (ACR122U) in the near future.
 
 This project is tested with the cards used in Lille, France (PassPass or Pass Pass cards). It should also work with Navigo cards, though some changes are necessary due to the complex topology of Paris public transport network (zones, check-outs...).
 I will make this project compatible with Navigo cards once I get a new one, but that shouldn't be that hard.
@@ -22,7 +22,7 @@ NONE OF THE INFORMATION IN THIS REPO SHOULD BE TAKEN AS FACE VALUE. Just in case
 
 ## TODO :
 - Support for more CalypsoRecordField.Type
-- Android port (it's comming)
+- Android port (it's being done [here](http://github.com/ABeaujet/CalypsoInspectorAndroid))
 - Android support for external readers
 
 ## How to use:
