@@ -2,7 +2,9 @@ package fr.mikado.calypsoinspector;
 
 import fr.mikado.calypso.CalypsoCard;
 import fr.mikado.calypso.CalypsoEnvironment;
+import fr.mikado.calypso.CalypsoRawDump;
 import fr.mikado.isodepimpl.IsoDepImpl;
+import fr.mikado.xmlio.XMLIOImpl;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
@@ -16,11 +18,15 @@ public class Main {
 
         CalypsoCard passPass = new CalypsoCard(getDefaultCard(), env);
         passPass.read();
+        passPass.disconnect();
         passPass.dump(false);
         CalypsoDump.dumpProfiles(env);
         CalypsoDump.dumpContracts(env);
         CalypsoDump.dumpTrips(env);
-        passPass.disconnect();
+
+        CalypsoRawDump raw = new CalypsoRawDump(env);
+        raw.debugPrint();
+        raw.writeXML(new XMLIOImpl(), "rawDumpTest.xml");
     }
 
     public static IsoDepImpl getDefaultCard() throws CardException {

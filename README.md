@@ -22,7 +22,7 @@ NONE OF THE INFORMATION IN THIS REPO SHOULD BE TAKEN AS FACE VALUE. Just in case
 
 ## TODO :
 - Support for more CalypsoRecordField.Type
-- Android port
+- Android port (it's comming)
 - Android support for external readers
 
 ## How to use:

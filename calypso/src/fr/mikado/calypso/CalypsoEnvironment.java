@@ -1,13 +1,10 @@
 package fr.mikado.calypso;
 
+import fr.mikado.xmlio.XMLIOImpl;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.jdom2.input.JDOMParseException;
-import org.jdom2.input.SAXBuilder;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -134,19 +131,7 @@ public class CalypsoEnvironment {
     }
 
     public static Document openDocument(String filename){
-        SAXBuilder sax = new SAXBuilder();
-        Document doc;
-        try {
-            doc = sax.build(new File(filename));
-        } catch (JDOMException e) {
-            Logger.getGlobal().severe("Error while parsing file \""+filename+"\"");
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            Logger.getGlobal().severe("Cannot read file \""+filename+"\"");
-            return null;
-        }
-        return doc;
+        return new XMLIOImpl().loadDocument(filename);
     }
 
     // Yeah... Two names for the same method, right? Well I both need this to be static (be reusable outside of CalypsoEnv, and be overridable on Android... Ugly.
