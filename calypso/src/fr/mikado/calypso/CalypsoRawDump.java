@@ -15,7 +15,7 @@ import static fr.mikado.calypso.CalypsoFile.CalypsoFileType.EF;
 public class CalypsoRawDump {
 
     public static class CalypsoFileDump implements Serializable {
-        private String fileName;
+        private String filename;
         private ArrayList<CalypsoFileDump> children;
         private ArrayList<byte[]> records;
         public CalypsoFileDump(){
@@ -23,14 +23,14 @@ public class CalypsoRawDump {
             this.children = new ArrayList<>();
         }
         public CalypsoFileDump(Element e){
-            this.fileName = e.getAttributeValue("filename");
+            this.filename = e.getAttributeValue("filename");
             this.records = new ArrayList<>();
             this.children = new ArrayList<>();
 
             this.fromXMLElement(this, e);
         }
         public void fromXMLElement(CalypsoFileDump fd, Element e){
-            this.fileName = e.getAttributeValue("filename");
+            this.filename = e.getAttributeValue("filename");
             if(!e.getChildren().isEmpty()) {
                 for (Element re : e.getChildren("record"))
                     fd.records.add(BitArray.hex2Bytes(re.getValue()));
@@ -43,7 +43,7 @@ public class CalypsoRawDump {
         }
         private Element getXmlElement(){
             Element e = new Element("file");
-            e.setAttribute("filename", this.fileName);
+            e.setAttribute("filename", this.filename);
             if(this.children.isEmpty()){ // add the record contents
                 for(byte[] rec : this.records) {
                     Element recElem = new Element("record");
@@ -59,9 +59,18 @@ public class CalypsoRawDump {
             }
             return e;
         }
+        public String getFilename() {
+            return filename;
+        }
+        public ArrayList<CalypsoFileDump> getChildren() {
+            return children;
+        }
+        public ArrayList<byte[]> getRecords() {
+            return records;
+        }
     }
 
-    protected final CalypsoEnvironment env;
+    protected CalypsoEnvironment env;
     protected ArrayList<CalypsoFileDump> dump;
 
     public CalypsoRawDump(CalypsoEnvironment env){
@@ -69,9 +78,14 @@ public class CalypsoRawDump {
         getRawDump();
     }
 
+    public CalypsoRawDump(XMLIOInterface xmlio, String filename) throws IOException {
+        this.env = null;
+        loadXML(xmlio, filename);
+    }
+
     public CalypsoFileDump getFileDump(CalypsoFile f){
         CalypsoFileDump fd = new CalypsoFileDump();
-        fd.fileName = f.getDescription();
+        fd.filename = f.getDescription();
         if(f.getType() == EF)
             fd.records = f.getRawRecords();
         else
@@ -119,7 +133,7 @@ public class CalypsoRawDump {
     }
 
     private void debugPrintFile(CalypsoFileDump fd, int i){
-        System.out.println(indent(i) + "File " + fd.fileName + " :");
+        System.out.println(indent(i) + "File " + fd.filename + " :");
         for(byte[] bytes : fd.records)
             System.out.println(indent(i+4) + "Record : " + BitArray.bytes2Hex(bytes));
         for(CalypsoFileDump child : fd.children)
@@ -131,6 +145,9 @@ public class CalypsoRawDump {
             debugPrintFile(fd, 0);
     }
 
+    public ArrayList<CalypsoFileDump> getFiles() {
+        return dump;
+    }
 }
 
 

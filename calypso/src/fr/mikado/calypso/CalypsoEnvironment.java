@@ -479,4 +479,18 @@ public class CalypsoEnvironment {
         this.cardStructure = new ArrayList<>();
         this.contractPointers = new ArrayList<>();
     }
+
+    public void loadFileDump(CalypsoRawDump.CalypsoFileDump fd){
+        CalypsoFile f = this.getFile(fd.getFilename());
+        for(byte[] recBytes : fd.getRecords())
+            f.newRecord(recBytes);
+        for(CalypsoRawDump.CalypsoFileDump child : fd.getChildren())
+            loadFileDump(child);
+    }
+
+    public void loadDump(CalypsoRawDump dump){
+        this.purgeFilesContents();
+        for(CalypsoRawDump.CalypsoFileDump fd : dump.getFiles())
+            loadFileDump(fd);
+    }
 }

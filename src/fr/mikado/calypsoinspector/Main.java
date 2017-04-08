@@ -9,6 +9,7 @@ import fr.mikado.xmlio.XMLIOImpl;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
+import java.io.IOException;
 
 public class Main {
 
@@ -24,9 +25,22 @@ public class Main {
         CalypsoDump.dumpContracts(env);
         CalypsoDump.dumpTrips(env);
 
-        CalypsoRawDump raw = new CalypsoRawDump(env);
-        raw.debugPrint();
-        raw.writeXML(new XMLIOImpl(), "rawDumpTest.xml");
+        // save the card contents to a raw dump file :
+        new CalypsoRawDump(env).writeXML(new XMLIOImpl(), "rawDumpTest.xml");
+
+        // say you want to load a card dump :
+        // loadDump()
+    }
+
+    public static void loadDump() throws Exception {
+        CalypsoRawDump rawImport = new CalypsoRawDump(new XMLIOImpl(), "rawDumpTest.xml");
+        CalypsoEnvironment envImport = new CalypsoEnvironment("Transpole");
+        envImport.loadDump(rawImport);
+
+        // now print the contents :
+        CalypsoDump.dumpProfiles(envImport);
+        CalypsoDump.dumpContracts(envImport);
+        CalypsoDump.dumpTrips(envImport);
     }
 
     public static IsoDepImpl getDefaultCard() throws CardException {
