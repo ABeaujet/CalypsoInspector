@@ -1,6 +1,7 @@
 package fr.mikado.calypso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -9,6 +10,7 @@ import java.util.Collections;
  */
 public class BitArray {
     private ArrayList<Boolean> bits;
+    private static char hexChars[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     public BitArray(int size){
         this.bits = new ArrayList<>(Collections.nCopies(size, false));
@@ -55,6 +57,19 @@ public class BitArray {
             this.set(count-i-1, ((bits>>(count-1-i))&0x01L) == 1);
     }
 
+    public static byte[] hex2Bytes(String hexBytes){
+        if(hexBytes.length()%2 != 0)
+            throw new NumberFormatException("Hex byte string has to contain an even number of characters");
+        byte[] bytes = new byte[hexBytes.length()/2];
+        char[] chars = hexBytes.toCharArray();
+        String hexCharsStr = new String(hexChars);
+        for(int i = 0;i<hexBytes.length();i+=2){
+            bytes[i/2]  = (byte) (hexCharsStr.indexOf(chars[i]) << 4);
+            bytes[i/2] |= (byte) (hexCharsStr.indexOf(chars[i+1]));
+        }
+        return bytes;
+    }
+
     public static String bytes2Hex(byte[] bs, int offset, int len){
         byte[] t = new byte[len];
         for (int i = offset; i < len; i++)
@@ -63,10 +78,9 @@ public class BitArray {
     }
 
     public static String byte2Hex(byte b){
-        char c[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         StringBuilder sb = new StringBuilder();
-        sb.append(c[(b>>4)&0xf]);
-        sb.append(c[b&0xf]);
+        sb.append(hexChars[(b>>4)&0xf]);
+        sb.append(hexChars[b&0xf]);
         return sb.toString();
     }
 

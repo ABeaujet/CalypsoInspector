@@ -105,4 +105,14 @@ public class BitArrayTest {
 
         assertTrue(val1.equals(val2));
     }
+
+    @Test
+    public void testHex2Bytes() throws Exception{
+        String hex = "00ab000af88000";
+
+        byte[] expected = new byte[]{0x00, (byte)0xab, 0x00, 0x0a, (byte)0xf8, (byte)0x80, 0x00};
+        byte[] test = BitArray.hex2Bytes(hex);
+
+        assertArrayEquals(expected, test);
+    }
 }
