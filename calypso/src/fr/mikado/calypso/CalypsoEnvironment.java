@@ -478,6 +478,9 @@ public class CalypsoEnvironment {
         this.fares = new HashMap<>();
         this.cardStructure = new ArrayList<>();
         this.contractPointers = new ArrayList<>();
+        this.topologyConfigured = false;
+        this.profilesConfigured = false;
+        this.faresConfigured = false;
     }
 
     public void loadFileDump(CalypsoRawDump.CalypsoFileDump fd){

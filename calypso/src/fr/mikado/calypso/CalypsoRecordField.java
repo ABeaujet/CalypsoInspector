@@ -88,7 +88,7 @@ public class CalypsoRecordField {
         contractStatuses.put(255,"Deletable");
     }
 
-    private static String[] eventTypes = {"Non spécifié", "Entrée", "Sortie", "Contrôle", "Correspondance entrante", "Correspondance sortante", "Changement de sens ?"};
+    private static String[] eventTypes = {"Non spécifié", "Entrée", "Sortie", "Contrôle", "Correspondance entrante", "Correspondance sortante", "Correspondance"};
     private static String[] vehicleTypes = {"Non spécifié", "Bus urbain", "Bus interrurbain", "Métro", "Tramway", "Train", "Parking"};
     private static String[] cardStatuses = {"Anonyme", "Declarative", "Personnalisée", "Codage spécifique"};
 
@@ -321,9 +321,8 @@ public class CalypsoRecordField {
                 break;
             case Route:
                 if(this.env != null && this.env.isTopologyConfigured())
-                    this.convertedValue = this.env.getRouteName(this.bits.getInt()).replace("/--/", "<>"); // pas de chevrons dans le xml...
-                else
-                    this.convertedValue = this.bits.toHex();
+                    this.convertedValue = this.env.getRouteName(this.bits.getInt()).replace("/--/", "<>");
+                this.convertedValue = this.bits.toHex();
                 break;
             case YesNo:
                 this.convertedValue = this.bits.getInt() == 0 ? "Yes":"No";
@@ -437,7 +436,7 @@ public class CalypsoRecordField {
             case Profile:
                 if(this.env.areProfilesConfigured())
                     this.convertedValue = this.env.getProfileName(bits.getInt());
-                if(this.convertedValue == null)
+                else
                     this.convertedValue = ""+bits.getInt();
                 break;
             case EventCode:
