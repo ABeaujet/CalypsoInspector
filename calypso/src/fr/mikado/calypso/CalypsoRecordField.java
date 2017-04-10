@@ -322,7 +322,8 @@ public class CalypsoRecordField {
             case Route:
                 if(this.env != null && this.env.isTopologyConfigured())
                     this.convertedValue = this.env.getRouteName(this.bits.getInt()).replace("/--/", "<>");
-                this.convertedValue = this.bits.toHex();
+                else
+                    this.convertedValue = this.bits.toHex();
                 break;
             case YesNo:
                 this.convertedValue = this.bits.getInt() == 0 ? "Yes":"No";
@@ -374,7 +375,11 @@ public class CalypsoRecordField {
                 }
                 break;
             case ContractStatus:
-                this.convertedValue = contractStatuses.get(bits.getInt());
+                int cStatus = bits.getInt();
+                if(contractStatuses.containsKey(cStatus))
+                    this.convertedValue = contractStatuses.get(bits.getInt());
+                else
+                    this.convertedValue = ""+bits.getInt();
                 break;
             case ContractType:
                 this.convertedValue = null;
