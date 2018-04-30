@@ -5,6 +5,7 @@ import fr.mikado.calypso.CalypsoEnvironment;
 import fr.mikado.isodep.CardException;
 import fr.mikado.isodep.CommandAPDU;
 import fr.mikado.isodep.IsoDepInterface;
+import fr.mikado.isodepimpl.IsoDepImpl;
 import org.jdom2.Comment;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -16,7 +17,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import static fr.mikado.calypsoinspector.Main.getDefaultCard;
 
 public class Main {
 
@@ -35,7 +35,7 @@ public class Main {
             int choice = Integer.parseInt(s.nextLine());
             switch (choice) {
                 case 1:
-                    findAllFiles(getDefaultCard());
+                    findAllFiles(IsoDepImpl.getDefaultCard());
                     break;
                 case 2:
                     System.out.print("Bit pattern (must be a long as hex) : 0x");
@@ -52,7 +52,7 @@ public class Main {
 
                     CalypsoEnvironment cardEnv = new CalypsoEnvironment();
                     cardEnv.setCardStructure("fileList.xml");
-                    CalypsoCardSearch search = new CalypsoCardSearch(getDefaultCard(), cardEnv, new BitArray(pattern, patternSize));
+                    CalypsoCardSearch search = new CalypsoCardSearch(IsoDepImpl.getDefaultCard(), cardEnv, new BitArray(pattern, patternSize));
                     search.search();
                     search.dumpResults();
                     break;

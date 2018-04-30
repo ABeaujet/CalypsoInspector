@@ -1,6 +1,5 @@
 package fr.mikado.calypso;
 
-import com.sun.istack.internal.Nullable;
 import fr.mikado.isodep.CardException;
 import fr.mikado.isodep.CommandAPDU;
 import fr.mikado.isodep.IsoDepInterface;
@@ -124,7 +123,7 @@ public class CalypsoCard {
      * @param f CalypsoFile
      * @param LFI Which LFI to use for this file
      */
-    public void readFile(CalypsoFile f, @Nullable Integer LFI) throws CardException {
+    public void readFile(CalypsoFile f, Integer LFI) throws CardException {
         if(!f.isSFIAddressable())
             if(!this.selectFile(f, LFI))
                 return;

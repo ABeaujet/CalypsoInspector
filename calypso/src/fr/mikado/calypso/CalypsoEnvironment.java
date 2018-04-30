@@ -75,12 +75,12 @@ public class CalypsoEnvironment {
         this.networkList = new HashMap<>();
         Document networks = this.loadDocument("networks/networks.xml");
         if(networks == null){
-            System.out.println("You broke my shit nigga. Where my networks/networks.xml ?");
+            System.out.println("You broke my shit man. Where my networks/networks.xml ?");
             return;
         }
         Element root = networks.getRootElement();
         if(root == null){
-            System.out.println("You broke my shit nigga. Where my networks/networks.xml:countries node ?");
+            System.out.println("You broke my shit man. Where my networks/networks.xml:countries node ?");
             return;
         }
         for(Element country : root.getChildren())

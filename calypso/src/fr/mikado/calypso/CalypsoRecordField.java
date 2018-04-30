@@ -1,6 +1,5 @@
 package fr.mikado.calypso;
 
-import com.sun.istack.internal.Nullable;
 import org.jdom2.Document;
 import org.jdom2.Element;
 
@@ -111,7 +110,7 @@ public class CalypsoRecordField {
      * @param type Data type of the field
      * @param env Current Calypso Environment (can be null)
      */
-    public CalypsoRecordField(String description, int size, CalypsoRecordField.FieldType type, CalypsoRecordField parentField, @Nullable CalypsoEnvironment env){
+    public CalypsoRecordField(String description, int size, CalypsoRecordField.FieldType type, CalypsoRecordField parentField, CalypsoEnvironment env){
         this.description = description;
         this.length = size;
         this.subfields = new ArrayList<>();
@@ -202,7 +201,7 @@ public class CalypsoRecordField {
      * @param e XML DOM node
      * @param env Current Calypso Environment (can be null)
      */
-    public CalypsoRecordField(Element e, @Nullable CalypsoEnvironment env){
+    public CalypsoRecordField(Element e, CalypsoEnvironment env){
         this.description = e.getAttributeValue("description");
         this.type = this.getFieldTypeFromString(e.getAttributeValue("type"));
         this.length = Integer.parseInt(e.getAttributeValue("length"));

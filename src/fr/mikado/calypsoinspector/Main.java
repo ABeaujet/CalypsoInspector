@@ -17,7 +17,7 @@ public class Main {
 
         CalypsoEnvironment env = new CalypsoEnvironment("Transpole");
 
-        CalypsoCard passPass = new CalypsoCard(getDefaultCard(), env);
+        CalypsoCard passPass = new CalypsoCard(IsoDepImpl.getDefaultCard(), env);
         passPass.read();
         passPass.disconnect();
         passPass.dump(false);
@@ -41,22 +41,5 @@ public class Main {
         CalypsoDump.dumpProfiles(envImport);
         CalypsoDump.dumpContracts(envImport);
         CalypsoDump.dumpTrips(envImport);
-    }
-
-    public static IsoDepImpl getDefaultCard() throws CardException {
-        CardTerminal term = null;
-        try {
-            term = TerminalFactory.getDefault().terminals().list().get(0);
-        } catch (CardException e) {
-            System.out.println("No terminal plugged... : " + e.getMessage());
-        }
-        if(term == null)
-            throw new CardException("No terminal plugged.");
-
-        System.out.println("Waiting for card...");
-        term.waitForCardPresent(0);
-        System.out.println("Card found !");
-
-        return new IsoDepImpl(term.connect("T=1"));
     }
 }

@@ -5,7 +5,7 @@ import fr.mikado.isodep.CommandAPDU;
 import fr.mikado.isodep.IsoDepInterface;
 import fr.mikado.isodep.ResponseAPDU;
 
-import javax.smartcardio.Card;
+import javax.smartcardio.*;
 
 /**
  * Created by alexis on 05/04/17.
@@ -43,6 +43,23 @@ public class IsoDepImpl implements IsoDepInterface {
         } catch (javax.smartcardio.CardException e) {
             throw new CardException(e.getMessage());
         }
+    }
+
+    public static IsoDepImpl getDefaultCard() throws Exception {
+        CardTerminal term = null;
+        try {
+            term = TerminalFactory.getDefault().terminals().list().get(0);
+        } catch (Exception e) {
+            System.out.println("No terminal plugged... : " + e.getMessage());
+        }
+        if(term == null)
+            throw new CardException("No terminal plugged.");
+
+        System.out.println("Waiting for card...");
+        term.waitForCardPresent(0);
+        System.out.println("Card found !");
+
+        return new IsoDepImpl(term.connect("T=1"));
     }
 }
 
