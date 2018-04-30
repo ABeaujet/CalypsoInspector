@@ -34,7 +34,6 @@ Each public transport operator has its own ticketing policy and thus card struct
 For optimal results, copy and customize `networks/250/149/cardstruct.xml` with your own card structure (maybe you'll find some PDFs here and there from your network operator).
 Then, copy and customize `networks/250/149/topology.xml` to add your own metro/bus/... stops and routes. Again, interesting PDFs can be found in non .htaccess protected directories. Time to put your Google-fu to the test ;)
 
-
 # CalypsoFileFinder:
 
 This utility enumerates all the files contained on the card (option #1), and allows you to search for bit patterns in the files (#2).
@@ -47,6 +46,18 @@ Then, edit `fileList.out.xml` to configure the card structure (DFs, file descrip
 
 Once you're done, edit `fileList.xml` to make it look like the default `cardstruct.xml`, move it to `networks/$countryCode/$networkId` and add a new entry to `networks/networks.xml`.
 Then move on to CalypsoInspector.
+
+# Compiling and running
+
+This project was made with IntelliJ and is far from having the best architecture so compiling without Intellij is a pain in the ass. I added a Makefile in the last commit to make it simpler.
+
+To compile :  `$ make`
+Do not be affraid of the Makefile downloading stuff, it's just the XML lib.
+
+To run :  `$ java -cp out/*:lib/jdom2-2.0.3.jar fr.mikado.calypsoinspector.Main`
+
+Note for Debian users : add the following bit to the Java command line
+` -Dsun.security.smartcardio.library=/usr/lib/x86_64-linux-gnu/libpcsclite.so.1`
 
 # License
 
